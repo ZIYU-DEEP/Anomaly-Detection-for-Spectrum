@@ -54,8 +54,8 @@ for filename in sorted(glob.glob(normal_input_path + '*.txt')):
 
 
 print('start processing abnormal data....')
-for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
-    out = normal_output_path + 'feature_' + os.path.basename(filename)
+for filename in sorted(glob.glob(abnormal_input_path + '*.txt')):
+    out = abnormal_output_path + 'feature_' + os.path.basename(filename)
     print(filename, out)
 
     utils.extract_method3(filename, open(out, 'w'), window_size, predict_size)
