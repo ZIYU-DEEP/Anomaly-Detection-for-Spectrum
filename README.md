@@ -1,15 +1,12 @@
 # Anomaly-Detection-for-Spectrum
 ## 1. Introduction
 
-This is repository for anomaly detection for spectrum data.
+This is repository for anomaly detection for spectrum data. Currently, the model part has four components:
 
-Currently, the model part has five components:
-
-0. `utils.py`
-
-1. `featurization.py`
-2. `training.py`
-3. `evaluation.py`
+0. [utils.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/utils.py)
+1. [featurization.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/featurization.py)
+2. [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training.py)
+3. [evaluation.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/evaluation.py)
 
 
 
