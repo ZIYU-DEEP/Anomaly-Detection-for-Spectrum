@@ -22,10 +22,10 @@ This is repository for anomaly detection for spectrum data. Currently, the model
 
 This step is to featurize and normalize the downsampled data. The output to save is in the format of list of numpy arrays.
 
-In the directory of the code script, run the code:
+In the directory of the code script, run the following code in terminal:
 
 ```
-$python downsample_ratio window_size predict_size anomaly_folder
+$ python downsample_ratio window_size predict_size anomaly_folder
 ```
 
 A sample input parameter would be:
@@ -47,10 +47,10 @@ A sample input parameter would be:
 
 This step is to fit, validate and evaluate the model. In addition, it would also produce a array of data to validate the model. When validating the model on the array, we will  choose a certain false positive rate and set the corresponding error as the anomaly detection threshold.
 
-In the directory of the code script, run the code:
+In the directory of the code script, run the following code in terminal:
 
 ```
-$python downsample_ratio window_size predict_size shift_train shift_eval batch_size epochs
+$ python downsample_ratio window_size predict_size shift_train shift_eval batch_size epochs
 ```
 
 A sample input parameter would be:
@@ -79,10 +79,10 @@ Be sure that the input parameter in this step is consistent with the previous st
 
 This step is to evaluate the model's anomaly detection performance on different anomaly inputs.
 
-In the directory of the code script, run the code:
+In the directory of the code script, run the following code in terminal:
 
 ```
-$python downsample_ratio window_size shift_size batch_size anomaly_folder
+$ python downsample_ratio window_size shift_size batch_size anomaly_folder
 ```
 
 A sample input parameter would be:
