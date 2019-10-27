@@ -6,23 +6,23 @@ import sys
 import os
 import glob
 
-path = sys.argv[1]
-downsample = 10  #downsample rate
+path = sys.argv[1] # path to raw data, e.g. /net/adv_spectrum/data/raw/abnormal/0208_anomaly
+downsample = int(sys.argv[2])  #downsample rate
 # band = sys.argv[2]
 # samp_rate = sys.argv[3]
 # loc = sys.argv[4]
 
 # create a folder to save downsampled data
-if not os.path.exists(path + '/downsample_' + str(downsample)):
-	os.mkdir(path + '/downsample_' + str(downsample))
-
+downsample_str = 'downsample_' + str(downsample)
+output_path = path.replace('raw', 'downsample/' + downsample_str + '/') # e.g. 
+if not os.path.exists(output_path):
+	os.makedirs(output_path)
 
 for filename in glob.glob(path + '/*.dat'):
 	# for IQ data, we compute the FFT amplitude, and save it in txt file
 	w_filename = filename.replace('.dat', '_ap.txt')
-	w_filename = w_filename.replace(path, 
-					path + '/downsample_' + str(downsample))
-	print('{0} starts pre-processing.').format(filename)
+	w_filename = w_filename.replace(path, output_path)
+	print('{0} starts pre-processing.'.format(filename))
 
 
 
@@ -88,6 +88,6 @@ for filename in glob.glob(path + '/*.dat'):
 		# meaning this is the last block
 		if a < count//2:
 			break
-	print('{0} done').format(filename)
-	print('nan count: {0}-{1}').format(nan_count_a, nan_count_p)
-	print("dataset size: {0}").format(block_count)
+	print('{0} done'.format(filename))
+	print('nan count: {0}-{1}'.format(nan_count_a, nan_count_p))
+	print("dataset size: {0}".format(block_count))
