@@ -14,7 +14,7 @@ This is repository for anomaly detection for spectrum data. Currently, the model
 
 ### 1. Featurization
 
-> **Code Script**: [featurization.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/featurization.py)
+> **Code**: [featurization.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/featurization.py)
 >
 > **Input**: Downsampled normal and abnormal data 
 >
@@ -39,7 +39,7 @@ A sample input parameter would be:
 
 ### 2. Training
 
-> **Code Script**: [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training.py)
+> **Code**: [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training.py)
 >
 > **Input**: Featurized normal data (and abnormal data - if evaluation needed)
 >
@@ -67,7 +67,7 @@ Be sure that the input parameter in this step is consistent with the previous st
 
 ### 3. Evaluation
 
-> **Code Script**: [evaluation.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/evaluation.py)
+> **Code**: [evaluation.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/evaluation.py)
 >
 > **Input**: Model, the list of abnormal series, and the array of `full_x_valid`
 >
