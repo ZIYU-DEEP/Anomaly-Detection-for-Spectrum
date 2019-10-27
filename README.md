@@ -25,14 +25,14 @@ This step is to featurize and normalize the downsampled data. The output to save
 In the directory of the code script, run the code:
 
 ```
-$python downsample_ratio window_size shift_size anomaly_folder
+$python downsample_ratio window_size predict_size anomaly_folder
 ```
 
 A sample input parameter would be:
 
 - `downsample_ratio` = 10
 - `window_size` = 100
-- `shift_size` = 25
+- `predict_size` = 25
 - `anomaly_folder` = 0208_anomaly
 
 
@@ -50,16 +50,20 @@ This step is to fit, validate and evaluate the model. In addition, it would also
 In the directory of the code script, run the code:
 
 ```
-$python downsample_ratio window_size shift_size batch_size epochs
+$python downsample_ratio window_size predict_size shift_train shift_eval batch_size epochs
 ```
 
 A sample input parameter would be:
 
 - `downsample_ratio` = 10
 - `window_size` = 100
-- `shift_size` = 25
+- `predict_size` = 25
+- `shift_train` = 25
+- `shift_eval` = 125
 - `batch_size` = 256
 - `epochs` = 50
+
+**Note**: We suggest to use sliding window to train, such that you might specify the value of  `shift_train` equal to `predict_size`; and use non-sliding window to evaluate, such that you might specify the value of `shift_eval` equal to `window_size + shift_size`.
 
 Be sure that the input parameter in this step is consistent with the previous step.
 
@@ -85,7 +89,8 @@ A sample input parameter would be:
 
 - `downsample_ratio` = 10
 - `window_size` = 100
-- `shift_size` = 25
+- `predict_size` = 25
+- `shift_eval` = 125
 - `batch_size` = 256
 - `anomaly_folder` = 0208_anomaly
 
