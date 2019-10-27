@@ -12,7 +12,7 @@ This is repository for anomaly detection for spectrum data. Currently, the model
 
 ## 2. Model
 
-### 1. Featurization
+### 2.1. Featurization
 
 > **Code**: [featurization.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/featurization.py)
 >
@@ -37,7 +37,7 @@ A sample input parameter would be:
 
 
 
-### 2. Training
+### 2.2. Training
 
 > **Code**: [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training.py)
 >
@@ -69,7 +69,7 @@ Be sure that the input parameter in this step is consistent with the previous st
 
 
 
-### 3. Evaluation
+### 2.3. Evaluation
 
 > **Code**: [evaluation.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/evaluation.py)
 >
