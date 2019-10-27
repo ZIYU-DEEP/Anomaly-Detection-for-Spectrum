@@ -1,6 +1,7 @@
 """
-Title: training.py
-Prescription: Training the rnn model.
+Title: evaluation.py
+Prescription: Evaluate the model's anomaly detection performance on different
+              anomaly inputs.
 Author: Yeol Ye
 """
 
@@ -15,35 +16,34 @@ import matplotlib.pyplot as plt
 
 downsample_ratio = int(sys.argv[1])
 window_size = int(sys.argv[2])
-shift_size = int(sys.argv[3])
-batch_size = int(sys.argv[4])
-anomaly_folder = str(sys.argv[5])
-model_filename = str(sys.argv[6])
+predict_size = int(sys.argv[3])
+shift_eval = int(sys.argv[4])
+batch_size = int(sys.argv[5])
+anomaly_folder = str(sys.argv[6])
 
 downsample_str = 'downsample_' + str(downsample_ratio)
-window_shift_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
-normal_series_list_path = '../../data/dataset/' + downsample_str + '/' \
-                          + 'normal_series_list_' + window_shift_size
+window_predict_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
 abnormal_series_list_path = '../../data/dataset/' + downsample_str + '/' \
-                            + 'abnormal_series_list_' + window_shift_size
+                            + 'abnormal_series_list_' + window_predict_size
 full_x_valid_path = '../../data/dataset/' + downsample_str + '/' \
-                    + 'full_x_valid_' + window_shift_size
-valid_error_df_path = '../../data/evaluation/' + downsample_str + '/' \
-                      + 'valid_error_df_' + window_shift_size
-anom_error_df_list_path = '../../data/evaluation/' + anomaly_folder + '/' \
-                          + downsample_str + '/' + 'anom_error_df_list_' \
-                          + window_shift_size
-
+                    + 'full_x_valid_' + window_predict_size
+valid_error_df_path = '../../data/evaluation/normal/{}/valid_error_df_{}'\
+                      .format(downsample_str, window_predict_size)
+anom_error_df_list_path = '../../data/evaluation/abnormal/{}/{}/' \
+                          'anom_error_df_list_{}'.format(anomaly_folder,
+                                                         downsample_str,
+                                                         window_predict_size)
+model_path = '../../model/{}_{}_{}'.format(downsample_ratio, window_size,
+                                           predict_size)
 figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error (ds_ratio=' \
               + str(downsample_ratio) + ', window_size=' + str(window_size) \
-              + ', shift_size=' + str(shift_size) + ')'
+              + ', predict_size=' + str(predict_size) + ')'
 figure_path = '../../plot/' + figure_name
-
 
 ##########################################################
 # Load Model and Data
 ##########################################################
-model = tf.keras.models.load_model(model_filename)
+model = tf.keras.models.load_model(model_path)
 
 # Change the path if you need other abnormal series. Be sure the series are
 # stored in a format of list of arrays (shape = [n, 128]).
@@ -60,7 +60,7 @@ with open(full_x_valid_path, 'rb') as f:
 ##########################################################
 # Construct MSE DataFrame
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
-                           shift_size)
+                                 predict_size, shift_eval)
 valid_true = full_x_valid[window_size:, :].reshape((-1, 25, 128))
 valid_mse = np.mean(np.power(valid_hat.reshape(-1, 128) -
                              valid_true.reshape(-1, 128), 2), axis=1)
@@ -75,7 +75,7 @@ valid_error_df.to_pickle(valid_error_df_path)
 ##########################################################
 # Construct MSE DataFrame
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
-                                      shift_size)
+                                      predict_size, shift_eval)
                  for i in abnormal_series_list]
 anom_true_list = [i[window_size:, :].reshape((-1, 25, 128))
                   for i in abnormal_series_list]

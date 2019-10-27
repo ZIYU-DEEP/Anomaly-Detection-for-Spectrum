@@ -1,6 +1,6 @@
 """
 Title: featurization.py
-Prescription: Process downsampled data into features.
+Prescription: Process downsampled data into features
 Author: Yeol Ye
 """
 
@@ -11,22 +11,22 @@ import pickle
 
 downsample_ratio = str(sys.argv[1])  # e.g. downsample_10
 window_size = int(sys.argv[2])  # e.g. 100
-shift_size = int(sys.argv[3])  # e.g. 25
+predict_size = int(sys.argv[3])  # e.g. 25
 anomaly_folder = str(sys.argv[4])  # e.g. 0208_anomaly
 
 downsample_str = 'downsample_' + str(downsample_ratio)
-window_shift_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
+window_predict_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
 normal_input_path = '../../data/source/normal/' + downsample_str + '/'
 normal_output_path = '../../data/processed/normal/' + downsample_str + '/' \
-                     + window_shift_size + '/'
+                     + window_predict_size + '/'
 abnormal_input_path = '../../data/source/anomaly/' + anomaly_folder + '/' \
                       + downsample_str + '/'
 abnormal_output_path = '../../data/processed/anomaly/' + anomaly_folder + '/' \
-                       + downsample_str + '/' + window_shift_size + '/'
+                       + downsample_str + '/' + window_predict_size + '/'
 normal_series_list_path = '../../data/dataset/' + downsample_str + '/' \
-                          + 'normal_series_list_' + window_shift_size
+                          + 'normal_series_list_' + window_predict_size
 abnormal_series_list_path = '../../data/dataset/' + downsample_str + '/' \
-                            + 'abnormal_series_list_' + window_shift_size
+                            + 'abnormal_series_list_' + window_predict_size
 
 
 ##########################################################
@@ -38,7 +38,7 @@ for file in os.listdir(normal_input_path):
     filename = normal_input_path + file
     out = normal_output_path + 'feature_' + file
     print(out)
-    utils.extract_method3(filename, open(out, 'w'), window_size, shift_size)
+    utils.extract_method3(filename, open(out, 'w'), window_size, predict_size)
 
 
 for file in os.listdir(abnormal_input_path):
@@ -47,7 +47,7 @@ for file in os.listdir(abnormal_input_path):
     filename = abnormal_input_path + file
     out = abnormal_output_path + 'feature_' +  file
     print(out)
-    utils.extract_method3(filename, open(out, 'w'), window_size, shift_size)
+    utils.extract_method3(filename, open(out, 'w'), window_size, predict_size)
 
 
 ##########################################################

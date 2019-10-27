@@ -59,12 +59,13 @@ def txt_to_series(file_path, n_channels=128):
 ##########################################################
 # Series (np.array) to Windowed Dataset (tf.data.Dataset)
 ##########################################################
-def windowed_dataset(series, window_size, batch_size, shift_size):
+def windowed_dataset(series, window_size, batch_size, predict_size,
+                     shift_size):
     ds = tf.data.Dataset.from_tensor_slices(series)
-    ds = ds.window(window_size + shift_size, shift=shift_size,
+    ds = ds.window(window_size + predict_size, shift=shift_size,
                    drop_remainder=True)
-    ds = ds.flat_map(lambda w: w.batch(window_size + shift_size))
-    ds = ds.map(lambda w: (w[:-shift_size, :], w[window_size:, :]))
+    ds = ds.flat_map(lambda w: w.batch(window_size + predict_size))
+    ds = ds.map(lambda w: (w[:window_size, :], w[window_size:, :]))
     ds = ds.batch(batch_size).prefetch(buffer_size=AUTOTUNE)
     return ds
 
@@ -72,10 +73,12 @@ def windowed_dataset(series, window_size, batch_size, shift_size):
 ##########################################################
 # Model Forecast (np.array to tf.data.Dataset)
 ##########################################################
-def model_forecast(model, series, batch_size, window_size, shift_size):
+def model_forecast(model, series, batch_size, window_size, predict_size,
+                   shift_size):
     ds = tf.data.Dataset.from_tensor_slices(series)
-    ds = ds.window(window_size + shift_size, shift=shift_size, drop_remainder=True)
-    ds = ds.flat_map(lambda w: w.batch(window_size + shift_size))
+    ds = ds.window(window_size + predict_size, shift=shift_size,
+                   drop_remainder=True)
+    ds = ds.flat_map(lambda w: w.batch(window_size + predict_size))
     ds = ds.batch(batch_size).prefetch(buffer_size=AUTOTUNE)
     forecast = model.predict(ds)
     return forecast
