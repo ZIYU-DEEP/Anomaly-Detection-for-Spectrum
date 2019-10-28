@@ -59,7 +59,7 @@ This step is to fit, validate and evaluate the model. In addition, it would also
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python training.py downsample_ratio window_size predict_size normal_folder anomaly_folder shift_train shift_eval batch_size epochs
+$ python training.py downsample_ratio window_size predict_size normal_folder anomaly_folder shift_train shift_eval batch_size epochs gpu_no
 ```
 
 A sample input parameter would be:
@@ -73,11 +73,12 @@ A sample input parameter would be:
 - `shift_eval` = 125
 - `batch_size` = 256
 - `epochs` = 50
+- `gpu_no` = 3
 
 Thus results in:
 
 ```
-$ python training.py 10 100 25 ryerson 0208_anomaly 25 125 256 50
+$ python training.py 10 100 25 ryerson 0208_anomaly 25 125 256 50 3
 ```
 
 **Note**: We suggest to use sliding window to train, such that you might specify the value of  `shift_train` equal to `predict_size`; and use non-sliding window to evaluate, such that you might specify the value of `shift_eval` equal to `window_size + shift_size`.
@@ -99,7 +100,7 @@ This step is to evaluate the model's anomaly detection performance on different 
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python evaluation.py downsample_ratio window_size predict_size normal_folder anomaly_folder shift_eval batch_size
+$ python evaluation.py downsample_ratio window_size predict_size normal_folder anomaly_folder shift_eval batch_size gpu_no
 ```
 
 A sample input parameter would be:
@@ -111,11 +112,12 @@ A sample input parameter would be:
 - `anomaly_folder` = 0208_anomaly
 - `shift_eval` = 125
 - `batch_size` = 256
+- `gpu_no` = 3
 
 Thus results in:
 
 ```
-$ python evaluation.py 10 100 25 ryerson 0208_anomaly 125 256
+$ python evaluation.py 10 100 25 ryerson 0208_anomaly 125 256 3
 ```
 
 Be sure that the input parameter in this step is consistent with the previous step.

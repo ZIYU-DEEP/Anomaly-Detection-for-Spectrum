@@ -5,6 +5,7 @@ Prescription: Evaluate the model's anomaly detection performance on different
 """
 
 import utils
+import os
 import glob
 import pickle
 import sys
@@ -28,7 +29,10 @@ normal_folder = str(sys.argv[4])  # e.g. ryerson
 anomaly_folder = str(sys.argv[5])  # e.g. 0208_anomaly
 shift_eval = int(sys.argv[6])
 batch_size = int(sys.argv[7])
+gpu_no = str(sys.argv[8])
 
+# Set gpu environment
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
 
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)

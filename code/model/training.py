@@ -29,6 +29,10 @@ shift_train = int(sys.argv[6])
 shift_eval = int(sys.argv[7])
 batch_size = int(sys.argv[8])
 epochs = int(sys.argv[9])
+gpu_no = str(sys.argv[10])
+
+# Set gpu environment
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
 
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
