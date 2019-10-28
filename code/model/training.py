@@ -5,6 +5,7 @@ Declaration: The LSTM structure credits to Zhijing Li
 """
 
 from tensorflow.keras.callbacks import EarlyStopping
+from timeit import default_timer as timer
 import utils
 import os
 import pickle
@@ -58,6 +59,8 @@ full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
 model_path = '/net/adv_spectrum/model/{}/'.format(downsample_str)
 model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
+model_info_filename = model_path + '{}_{}_time.txt'\
+                      .format(downsample_ratio, window_predict_size)
 
 # Check path existence
 if not os.path.exists(full_x_valid_path):
@@ -158,16 +161,22 @@ model.compile(loss='mean_squared_error',
 ##########################################################
 # 5. Fit model
 ##########################################################
+print('Fitting model...')
 history = model.fit(full_train_set, epochs=epochs, callbacks=[es])
 model.save(model_filename)
+
+model_size = os.path.getsize(model_filename)
 
 
 ##########################################################
 # 6. Model Validation and Evaluation
 ##########################################################
 print('Validate model on valid set (using normal data):')
-
+start = timer()
 model.evaluate(full_valid_set)
+end = timer()
+validation_time = start - end
+print('Validation spends {} seconds! Hmm...'.format(validation_time))
 
 print('Evaluate model on test set (using abnormal data):')
 for i, abnormal_set in enumerate(abnormal_set_list):
@@ -175,3 +184,13 @@ for i, abnormal_set in enumerate(abnormal_set_list):
     print(model.evaluate(abnormal_set))
 
 print('Training finished!')
+
+
+##########################################################
+# 7. Write model information
+##########################################################
+with open(model_info_filename, 'w') as f:
+    f.write('Model name: {}_{}.h5\n'.format(downsample_ratio,
+                                          window_predict_size))
+    f.write('Model size: {}\n'.format(model_size))
+    f.write('Validation time: {}\n'.format(validation_time))

@@ -57,6 +57,8 @@ full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
 model_path = '/net/adv_spectrum/model/{}/'.format(downsample_str)
 model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
+model_info_filename = model_path + '{}_{}_time.txt'\
+                      .format(downsample_ratio, window_predict_size)
 
 # Path to save valid error df and list of anomaly error df
 valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
@@ -196,9 +198,14 @@ cut = valid_error_df.quantile(0.9)[0]
 i = 0
 print('False Positive Rate: 10%')
 
+f = open(model_info_filename, 'w')
 for df in anom_error_df_list:
     y = [1 if e > cut else 0 for e in df['anom_error ' + str(i)].values]
-    print('Detection rate for anom_error ' + str(i) + ':', sum(y) / len(y))
+    detect_rate = sum(y) / len(y)
+    detect_str = 'Detection rate for anom_error_{}: {}\n'.format(i, detect_rate)
+    print(detect_str)
+    f.write(detect_str)
     i += 1
+f.close()
 
 print('Evaluation finished!')
