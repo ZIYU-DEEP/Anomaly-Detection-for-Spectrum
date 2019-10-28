@@ -46,30 +46,43 @@ abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
                     .format(downsample_str, anomaly_folder, window_predict_size)
 
 # Path to save model and full_x_valid
-full_x_valid_path = '/net/adv_spectrum/result/valid_x/full_x_valid_{}_{}'\
-                    .format(downsample_str, window_predict_size)
+full_x_valid_path = '/net/adv_spectrum/result/valid_x/'
+full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
+                        .format(downsample_str,
+                                normal_folder,
+                                window_predict_size)
 model_path = '/net/adv_spectrum/model/{}/{}_{}'\
              .format(downsample_str, downsample_ratio, window_predict_size)
 
 # Path to save valid error df and list of anomaly error df
 valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
-                      '{}/{}/valid_error_df_{}.pkl'.format(downsample_str,
-                                                           normal_folder,
-                                                           window_predict_size)
+                      '{}/{}/'.format(downsample_str, normal_folder)
+valid_error_df_filename = valid_error_df_path + 'valid_error_df_{}.pkl'\
+                          .format(window_predict_size)
 
 anom_error_df_list_path = '/net/adv_spectrum/result/error_df/anomaly/' \
-                          '{}/{}/anom_error_df_{}.pkl'\
-                          .format(downsample_str,
-                                  anomaly_folder,
-                                  window_predict_size)
+                          '{}/{}/'.format(downsample_str, anomaly_folder)
+anom_error_df_list_filename = valid_error_df_path + 'anom_error_df_{}.pkl'\
+                              .format(window_predict_size)
 
 # Path of figure
 figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
               '(ds_ratio={}, w_p_size={})'\
               .format(downsample_ratio, window_predict_size)
-figure_path = '/net/adv_spectrum/result/plot/CDF_plot_{}_{}_{}_{}.png'\
-              .format(normal_folder, anomaly_folder,
-                      downsample_ratio, window_predict_size)
+figure_path = '/net/adv_spectrum/result/plot/'
+figure_filename = figure_path + 'CDF_plot_{}_{}_{}_{}.png'\
+                  .format(normal_folder, anomaly_folder, downsample_ratio,
+                          window_predict_size)
+
+# Check path existence
+if not os.path.exists(full_x_valid_path):
+    os.makedirs(full_x_valid_path)
+if not os.path.exists(valid_error_df_path):
+    os.makedirs(valid_error_df_path)
+if not os.path.exists(anom_error_df_list_path):
+    os.makedirs(anom_error_df_list_path)
+if not os.path.exists(figure_path):
+    os.makedirs(figure_path)
 
 
 ##########################################################
@@ -87,7 +100,7 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     abnormal_series_list.append(series)
 
 # Comment out the following operation if you do not need validation data
-with open(full_x_valid_path, 'rb') as f:
+with open(full_x_valid_filename, 'rb') as f:
     full_x_valid = pickle.load(f)
 
 
@@ -104,7 +117,7 @@ valid_mse = np.mean(np.power(valid_hat.reshape(-1, 128) -
 valid_error_df = pd.DataFrame({'valid_error': valid_mse})
 
 # Save MSE DataFrame
-valid_error_df.to_pickle(valid_error_df_path)
+valid_error_df.to_pickle(valid_error_df_filename)
 
 
 ##########################################################
@@ -129,7 +142,7 @@ for i in range(len(anom_hat_list)):
     anom_error_df_list.append(anom_error_df)
 
 # Save MSE DataFrame
-with open(anom_error_df_list_path, 'wb') as f:
+with open(anom_error_df_list_filename, 'wb') as f:
     pickle.dump(anom_error_df_list, f)
 
 

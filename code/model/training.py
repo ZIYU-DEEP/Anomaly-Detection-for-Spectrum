@@ -48,8 +48,11 @@ abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
                     .format(downsample_str, anomaly_folder, window_predict_size)
 
 # Path to save model and full_x_valid
-full_x_valid_path = '/net/adv_spectrum/result/valid_x/full_x_valid_{}_{}.pkl'\
-                    .format(downsample_str, window_predict_size)
+full_x_valid_path = '/net/adv_spectrum/result/valid_x/'
+full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
+                        .format(downsample_str,
+                                normal_folder,
+                                window_predict_size)
 model_path = '/net/adv_spectrum/model/{}/{}_{}.h5'\
              .format(downsample_str, downsample_ratio, window_predict_size)
 
@@ -118,7 +121,7 @@ for series in abnormal_series_list:
 
 
 # Save full_x_valid for future threshold use
-with open(full_x_valid_path, 'wb') as f:
+with open(full_x_valid_filename, 'wb') as f:
     pickle.dump(full_x_valid, f)
 
 
