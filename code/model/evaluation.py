@@ -208,4 +208,5 @@ for df in anom_error_df_list:
     i += 1
 f.close()
 
+tf.keras.backend.clear_session()
 print('Evaluation finished!')

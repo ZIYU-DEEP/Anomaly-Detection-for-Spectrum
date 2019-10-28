@@ -138,6 +138,12 @@ with open(full_x_valid_filename, 'wb') as f:
 # 4. Compile model
 ##########################################################
 print('Start compiling model...')
+tf.keras.backend.clear_session()
+tf.random.set_seed(42)
+np.random.seed(42)
+tf.config.gpu.set_per_process_memory_fraction(0.75)
+tf.config.gpu.set_per_process_memory_growth(True)
+
 model = tf.keras.models.\
     Sequential([tf.keras.layers.LSTM(64, return_sequences=True,
                                      input_shape=[None, 128]),
@@ -183,8 +189,6 @@ for i, abnormal_set in enumerate(abnormal_set_list):
     print('Abnormal set: ', i)
     print(model.evaluate(abnormal_set))
 
-print('Training finished!')
-
 
 ##########################################################
 # 7. Write model information
@@ -194,3 +198,6 @@ with open(model_info_filename, 'w') as f:
                                           window_predict_size))
     f.write('Model size: {}\n'.format(model_size))
     f.write('Validation time: {}\n'.format(validation_time))
+
+tf.keras.backend.clear_session()
+print('Training finished!')
