@@ -142,8 +142,6 @@ print('Start compiling model...')
 tf.keras.backend.clear_session()
 tf.random.set_seed(42)
 np.random.seed(42)
-tf.config.gpu.set_per_process_memory_fraction(0.75)
-tf.config.gpu.set_per_process_memory_growth(True)
 
 model = tf.keras.models.\
     Sequential([tf.keras.layers.LSTM(64, return_sequences=True,
