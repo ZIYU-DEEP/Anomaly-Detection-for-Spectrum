@@ -81,7 +81,7 @@ Thus results in:
 $ python training.py 10 100 25 ryerson 0208_anomaly 25 125 256 50 3
 ```
 
-**Note**: We suggest to use sliding window to train, such that you might specify the value of  `shift_train` equal to `predict_size`; and use non-sliding window to evaluate, such that you might specify the value of `shift_eval` equal to `window_size + shift_size`.
+**Note**: We suggest to use sliding window to train, such that you might specify the value of  `shift_train` equal to `predict_size`; and use non-sliding window to evaluate, such that you might specify the value of `shift_eval` equal to `window_size + predict_size`.
 
 Be sure that the input parameter in this step is consistent with the previous step.
 
