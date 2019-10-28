@@ -10,6 +10,8 @@ This is repository for anomaly detection for spectrum data. Currently, the model
 
 
 
+
+
 ## 2. Model
 
 ### 2.1. Featurization
@@ -41,8 +43,6 @@ Thus results in:
 ```
 $ python featurization.py 10 100 25 ryerson 0208_anomaly
 ```
-
-
 
 
 
@@ -79,8 +79,6 @@ Thus results in:
 ```
 $ python training.py 10 100 25 ryerson 0208_anomaly 25 125 256 50
 ```
-
-
 
 **Note**: We suggest to use sliding window to train, such that you might specify the value of  `shift_train` equal to `predict_size`; and use non-sliding window to evaluate, such that you might specify the value of `shift_eval` equal to `window_size + shift_size`.
 
