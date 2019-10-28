@@ -16,7 +16,7 @@ import glob
 downsample_ratio = str(sys.argv[1])  # e.g. 10
 window_size = int(sys.argv[2])  # e.g. 100
 predict_size = int(sys.argv[3])  # e.g. 25
-normal_folder = str(sys.argv[4]) # e.g. ryerson
+normal_folder = str(sys.argv[4])  # e.g. ryerson
 anomaly_folder = str(sys.argv[5])  # e.g. 0208_anomaly
 
 # String variables

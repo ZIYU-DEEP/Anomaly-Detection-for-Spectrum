@@ -25,7 +25,7 @@ This step is to featurize and normalize the downsampled data. The output to save
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python downsample_ratio window_size predict_size anomaly_folder
+$ python downsample_ratio window_size predict_size normal_folder anomaly_folder
 ```
 
 A sample input parameter would be:
@@ -33,6 +33,7 @@ A sample input parameter would be:
 - `downsample_ratio` = 10
 - `window_size` = 100
 - `predict_size` = 25
+- `normal_folder` = ryerson
 - `anomaly_folder` = 0208_anomaly
 
 
@@ -50,7 +51,7 @@ This step is to fit, validate and evaluate the model. In addition, it would also
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python downsample_ratio window_size predict_size shift_train shift_eval batch_size epochs
+$ python downsample_ratio window_size predict_size normal_folder anomaly_folder shift_train shift_eval batch_size epochs
 ```
 
 A sample input parameter would be:
@@ -58,6 +59,8 @@ A sample input parameter would be:
 - `downsample_ratio` = 10
 - `window_size` = 100
 - `predict_size` = 25
+- `normal_folder` = ryerson
+- `anomaly_folder` = 0208_anomaly
 - `shift_train` = 25
 - `shift_eval` = 125
 - `batch_size` = 256
@@ -82,7 +85,7 @@ This step is to evaluate the model's anomaly detection performance on different 
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python downsample_ratio window_size shift_size batch_size anomaly_folder
+$ python downsample_ratio window_size predict_size normal_folder anomaly_folder shift_eval batch_size
 ```
 
 A sample input parameter would be:
@@ -90,8 +93,9 @@ A sample input parameter would be:
 - `downsample_ratio` = 10
 - `window_size` = 100
 - `predict_size` = 25
+- `normal_folder` = ryerson
+- `anomaly_folder` = 0208_anomaly
 - `shift_eval` = 125
 - `batch_size` = 256
-- `anomaly_folder` = 0208_anomaly
 
 Be sure that the input parameter in this step is consistent with the previous step.
