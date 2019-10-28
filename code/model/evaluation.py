@@ -54,7 +54,8 @@ full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
                         .format(downsample_str,
                                 normal_folder,
                                 window_predict_size)
-model_path = '/net/adv_spectrum/model/{}/'.format(downsample_str)
+model_path = '/net/adv_spectrum/model/{}/{}/'\
+             .format(downsample_str, normal_folder)
 model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
 model_info_filename = model_path + '{}_{}_time.txt'\
