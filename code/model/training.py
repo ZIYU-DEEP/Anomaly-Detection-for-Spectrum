@@ -53,8 +53,9 @@ full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
                         .format(downsample_str,
                                 normal_folder,
                                 window_predict_size)
-model_path = '/net/adv_spectrum/model/{}/{}_{}.h5'\
-             .format(downsample_str, downsample_ratio, window_predict_size)
+model_path = '/net/adv_spectrum/model/{}/'.format(downsample_str)
+model_filename = model_path + '{}_{}.h5'\
+                 .format(downsample_ratio, window_predict_size)
 
 # Check path existence
 if not os.path.exists(full_x_valid_path):
@@ -156,13 +157,14 @@ model.compile(loss='mean_squared_error',
 # 5. Fit model
 ##########################################################
 history = model.fit(full_train_set, epochs=epochs, callbacks=[es])
-model.save(model_path)
+model.save(model_filename)
 
 
 ##########################################################
 # 6. Model Validation and Evaluation
 ##########################################################
 print('Validate model on valid set (using normal data):')
+
 model.evaluate(full_valid_set)
 
 print('Evaluate model on test set (using abnormal data):')

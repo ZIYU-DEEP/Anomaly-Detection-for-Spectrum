@@ -52,8 +52,9 @@ full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
                         .format(downsample_str,
                                 normal_folder,
                                 window_predict_size)
-model_path = '/net/adv_spectrum/model/{}/{}_{}'\
-             .format(downsample_str, downsample_ratio, window_predict_size)
+model_path = '/net/adv_spectrum/model/{}/'.format(downsample_str)
+model_filename = model_path + '{}_{}.h5'\
+                 .format(downsample_ratio, window_predict_size)
 
 # Path to save valid error df and list of anomaly error df
 valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
@@ -89,7 +90,7 @@ if not os.path.exists(figure_path):
 ##########################################################
 # 2. Load Model and Data
 ##########################################################
-model = tf.keras.models.load_model(model_path)
+model = tf.keras.models.load_model(model_filename)
 
 # Change the path if you need other abnormal series. Be sure the series are
 # stored in a format of list of arrays (shape = [n, 128]).
