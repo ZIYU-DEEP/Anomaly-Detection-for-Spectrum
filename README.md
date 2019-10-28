@@ -27,7 +27,7 @@ This step is to featurize and normalize the downsampled data. The output to save
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python featurization.py downsample_ratio window_size predict_size normal_folder anomaly_folder
+$ python featurization.py downsample_ratio window_size predict_size folder data_type
 ```
 
 A sample input parameter would be:
@@ -35,13 +35,13 @@ A sample input parameter would be:
 - `downsample_ratio` = 10
 - `window_size` = 100
 - `predict_size` = 25
-- `normal_folder` = ryerson
-- `anomaly_folder` = 0208_anomaly
+- `folder` = ryerson (or 0208_anomaly)
+- `data_type` = normal (or abnormal)
 
 Thus results in:
 
 ```
-$ python featurization.py 10 100 25 ryerson 0208_anomaly
+$ python featurization.py 10 100 25 ryerson normal
 ```
 
 
@@ -121,4 +121,3 @@ $ python evaluation.py 10 100 25 ryerson 0208_anomaly 125 256 3
 ```
 
 Be sure that the input parameter in this step is consistent with the previous step.
-
