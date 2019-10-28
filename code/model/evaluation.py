@@ -161,7 +161,7 @@ with open(anom_error_df_list_filename, 'wb') as f:
 print('Start plotting...')
 # If you need other normal data as baseline, be sure to change the following
 # line to the path you desired.
-with open(valid_error_df_path, 'rb') as f:
+with open(valid_error_df_filename, 'rb') as f:
     valid_error_df = pickle.load(f)
 
 # Draw plot
@@ -189,7 +189,7 @@ ax.set_xlim(left=0, right=4)
 plt.legend(loc=4)
 plt.xlabel('Value of prediction error')
 plt.ylabel('Cumulative probability')
-ax.get_figure().savefig(figure_path)
+ax.get_figure().savefig(figure_filename)
 
 
 ##########################################################
