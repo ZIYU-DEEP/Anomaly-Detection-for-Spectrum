@@ -115,11 +115,10 @@ with open(full_x_valid_filename, 'rb') as f:
 print('Start constructing mse DataFrame...')
 # Construct MSE DataFrame
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
-                                 predict_size, shift_eval)
+                                 predict_size, shift_eval).reshape(-1, 128)
 valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size)
 
-valid_mse = np.mean(np.power(valid_hat.reshape(-1, 128) -
-                             valid_true.reshape(-1, 128), 2), axis=1)
+valid_mse = np.mean(np.power(valid_hat - valid_true, 2), axis=1)
 valid_error_df = pd.DataFrame({'valid_error': valid_mse})
 
 # Save MSE DataFrame
@@ -131,7 +130,7 @@ valid_error_df.to_pickle(valid_error_df_filename)
 ##########################################################
 # Construct MSE DataFrame
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
-                                      predict_size, shift_eval)
+                                      predict_size, shift_eval).reshape(-1, 128)
                  for i in abnormal_series_list]
 anom_true_list = [utils.windowed_true(full_x_valid, shift_eval, predict_size)
                   for i in abnormal_series_list]
@@ -141,8 +140,7 @@ anom_error_df_list = []
 for i in range(len(anom_hat_list)):
     anom_hat = anom_hat_list[i]
     anom_true = anom_true_list[i]
-    anom_mse = np.mean(np.power(anom_hat.reshape(-1, 128)
-                                - anom_true.reshape(-1, 128), 2), axis=1)
+    anom_mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
     anom_error_df = pd.DataFrame({'anom_error ' + str(i): anom_mse})
     anom_mse_list.append(anom_mse)
     anom_error_df_list.append(anom_error_df)

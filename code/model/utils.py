@@ -97,4 +97,4 @@ def windowed_true(series, shift_size, predict_size):
     return np.array([series[shift_size * i - predict_size: shift_size * i, :]
                     .reshape((-1, predict_size, 128))
                     for i in range(1, (len(series) // shift_size) + 1)])\
-           .reshape((-1, predict_size, 128))
+           .reshape((-1, 128))
