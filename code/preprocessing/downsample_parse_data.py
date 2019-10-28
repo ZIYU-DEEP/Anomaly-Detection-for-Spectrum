@@ -6,6 +6,7 @@ import sys
 import os
 import glob
 
+print('Start downsample...')
 path = sys.argv[1] # path to raw data, e.g. /net/adv_spectrum/data/raw/abnormal/0208_anomaly
 downsample = int(sys.argv[2])  #downsample rate
 # band = sys.argv[2]
@@ -29,12 +30,12 @@ for filename in glob.glob(path + '/*.dat'):
 	fid = open(filename, 'rb')
 	count = 1280000*2 # divide data into blocks. Each block has 1280000 IQ samples
 	Slen = 128 # Number of FFT points
-	block_count = 0  # Our data volume is large, 
-			 # so only process first 1200 blocks. 
+	block_count = 0  # Our data volume is large,
+			 # so only process first 1200 blocks.
 
 	MAX_num_of_block = 1200
-	trash_count = 102400 # throw the begining of data, becasue sometimes 
-			     # the begining of collected data are large numbers 
+	trash_count = 102400 # throw the begining of data, becasue sometimes
+			     # the begining of collected data are large numbers
 			     # which don't seem to be real signal measurements.
 	dont_care = np.fromfile(fid, np.float32, count=trash_count).reshape((-1, 2))
 
