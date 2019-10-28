@@ -9,6 +9,7 @@ import os
 import glob
 import pickle
 import sys
+import warnings
 import matplotlib
 import tensorflow as tf
 import numpy as np
@@ -16,6 +17,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+warnings.filterwarnings('ignore')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
@@ -114,7 +116,8 @@ print('Start constructing mse DataFrame...')
 # Construct MSE DataFrame
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
                                  predict_size, shift_eval)
-valid_true = full_x_valid[window_size:, :].reshape((-1, 25, 128))
+valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size)
+
 valid_mse = np.mean(np.power(valid_hat.reshape(-1, 128) -
                              valid_true.reshape(-1, 128), 2), axis=1)
 valid_error_df = pd.DataFrame({'valid_error': valid_mse})
@@ -130,7 +133,7 @@ valid_error_df.to_pickle(valid_error_df_filename)
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
                                       predict_size, shift_eval)
                  for i in abnormal_series_list]
-anom_true_list = [i[window_size:, :].reshape((-1, 25, 128))
+anom_true_list = [utils.windowed_true(full_x_valid, shift_eval, predict_size)
                   for i in abnormal_series_list]
 anom_mse_list = []
 anom_error_df_list = []
