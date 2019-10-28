@@ -14,11 +14,13 @@ downsample = int(sys.argv[2])  #downsample rate
 # loc = sys.argv[4]
 
 # create a folder to save downsampled data
+print('Start creating folder...')
 downsample_str = 'downsample_' + str(downsample)
 output_path = path.replace('raw', 'downsample/' + downsample_str + '/') # e.g. 
 if not os.path.exists(output_path):
 	os.makedirs(output_path)
 
+print('Start downsampling...')
 for filename in glob.glob(path + '/*.dat'):
 	# for IQ data, we compute the FFT amplitude, and save it in txt file
 	w_filename = filename.replace('.dat', '_ap.txt')
