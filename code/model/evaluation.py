@@ -109,6 +109,7 @@ with open(full_x_valid_filename, 'rb') as f:
 ##########################################################
 # 3. Construct MSE DataFrame for Validation Data
 ##########################################################
+print('Start constructing mse DataFrame...')
 # Construct MSE DataFrame
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
                                  predict_size, shift_eval)
@@ -151,6 +152,7 @@ with open(anom_error_df_list_filename, 'wb') as f:
 ##########################################################
 # 5. Plot CDF for Anomaly and Validation Set
 ##########################################################
+print('Start plotting...')
 # If you need other normal data as baseline, be sure to change the following
 # line to the path you desired.
 with open(valid_error_df_path, 'rb') as f:

@@ -71,11 +71,13 @@ abnormal_series_list = []
 
 print('Start constructing normal series....')
 for filename in sorted(glob.glob(normal_output_path + '*.txt')):
+    print(filename)
     series = utils.txt_to_series(filename)
     normal_series_list.append(series)
 
 print('Start constructing abnormal series....')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
+    print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
 
@@ -83,6 +85,7 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
 ##########################################################
 # 3. Load and Process Data
 ##########################################################
+print('Start loading and processing data...')
 # Initiate data
 temp = normal_series_list[0].copy()
 split_time = int(temp.shape[0] * 0.8)
@@ -128,6 +131,7 @@ with open(full_x_valid_filename, 'wb') as f:
 ##########################################################
 # 4. Compile model
 ##########################################################
+print('Start compiling model...')
 model = tf.keras.models.\
     Sequential([tf.keras.layers.LSTM(64, return_sequences=True,
                                      input_shape=[None, 128]),
