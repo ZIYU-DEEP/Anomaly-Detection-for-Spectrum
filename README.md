@@ -25,7 +25,7 @@ This step is to featurize and normalize the downsampled data. The output to save
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python downsample_ratio window_size predict_size normal_folder anomaly_folder
+$ python featurization.py downsample_ratio window_size predict_size normal_folder anomaly_folder
 ```
 
 A sample input parameter would be:
@@ -39,7 +39,7 @@ A sample input parameter would be:
 Thus results in:
 
 ```
-$ python 10 100 25 ryerson 0208_anomaly
+$ python featurization.py 10 100 25 ryerson 0208_anomaly
 ```
 
 
@@ -59,7 +59,7 @@ This step is to fit, validate and evaluate the model. In addition, it would also
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python downsample_ratio window_size predict_size normal_folder anomaly_folder shift_train shift_eval batch_size epochs
+$ python training.py downsample_ratio window_size predict_size normal_folder anomaly_folder shift_train shift_eval batch_size epochs
 ```
 
 A sample input parameter would be:
@@ -77,7 +77,7 @@ A sample input parameter would be:
 Thus results in:
 
 ```
-$ python 10 100 25 ryerson 0208_anomaly 25 125 256 50
+$ python training.py 10 100 25 ryerson 0208_anomaly 25 125 256 50
 ```
 
 
@@ -101,7 +101,7 @@ This step is to evaluate the model's anomaly detection performance on different 
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python downsample_ratio window_size predict_size normal_folder anomaly_folder shift_eval batch_size
+$ python evaluation.py downsample_ratio window_size predict_size normal_folder anomaly_folder shift_eval batch_size
 ```
 
 A sample input parameter would be:
@@ -117,8 +117,7 @@ A sample input parameter would be:
 Thus results in:
 
 ```
-$ python 10 100 25 ryerson 0208_anomaly 125 256
+$ python evaluation.py 10 100 25 ryerson 0208_anomaly 125 256
 ```
 
 Be sure that the input parameter in this step is consistent with the previous step.
-
