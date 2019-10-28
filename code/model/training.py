@@ -13,6 +13,8 @@ import tensorflow as tf
 import numpy as np
 import glob
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 ##########################################################
 # 1. Initialization

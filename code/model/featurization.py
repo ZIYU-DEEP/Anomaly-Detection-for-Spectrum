@@ -8,6 +8,8 @@ import os
 import sys
 import glob
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 ##########################################################
 # 1. Initialization
