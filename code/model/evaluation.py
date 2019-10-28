@@ -9,6 +9,7 @@ import os
 import glob
 import pickle
 import sys
+import matplotlib
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -160,10 +161,10 @@ sns.set_style('white')
 plt.figure(figsize=(23, 6))
 ax = sns.kdeplot(valid_error_df['valid_error'], cumulative=True, shade=False,
                  color='r')
-color_list = ['g', 'm', 'yellow', 'black']
+color_list = list(matplotlib.colors.cnames.items())
 for i in range(len(anom_hat_list)):
     ax = sns.kdeplot(anom_error_df_list[i]['anom_error ' + str(i)],
-                     cumulative=True, shade=False, color=color_list[i])
+                     cumulative=True, shade=False, color=color_list[i][0])
 
 sns.despine()
 ax.hlines(0.9, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100,
