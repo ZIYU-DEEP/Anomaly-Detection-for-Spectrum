@@ -135,8 +135,9 @@ valid_error_df.to_pickle(valid_error_df_filename)
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
                                       predict_size, shift_eval).reshape(-1, 128)
                  for i in abnormal_series_list]
-anom_true_list = [utils.windowed_true(full_x_valid, shift_eval, predict_size)
+anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
                   for i in abnormal_series_list]
+
 anom_mse_list = []
 anom_error_df_list = []
 

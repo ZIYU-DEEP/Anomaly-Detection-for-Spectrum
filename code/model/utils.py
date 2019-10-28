@@ -99,16 +99,3 @@ def windowed_true(series, shift_size, predict_size):
                     .reshape((-1, predict_size, 128))
                     for i in range(1, (len(series) // shift_size) + 1)])\
            .reshape((-1, 128))
-
-
-def fix_gpu_memory():
-    tf_config = tf.ConfigProto()
-    tf_config.gpu_options.allow_growth = True
-    tf_config.gpu_options.per_process_gpu_memory_fraction = 0.4
-    tf_config.log_device_placement = False
-    tf_config.allow_soft_placement = True
-    init_op = tf.global_variables_initializer()
-    sess = tf.Session(config=tf_config)
-    sess.run(init_op)
-    K.set_session(sess)
-    return sess
