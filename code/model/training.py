@@ -149,8 +149,7 @@ es = EarlyStopping(monitor='mse',
 
 model.compile(loss='mean_squared_error',
               optimizer='adam',
-              metrics=["mse"],
-              callbacks=[es])
+              metrics=["mse"])
 
 
 ##########################################################
