@@ -2,10 +2,10 @@
 Title: evaluation.py
 Prescription: Evaluate the model's anomaly detection performance on different
               anomaly inputs.
-Author: Yeol Ye
 """
 
 import utils
+import glob
 import pickle
 import sys
 import tensorflow as tf
@@ -14,49 +14,80 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
+##########################################################
+# 1. Initialization
+##########################################################
+# Arguments
 downsample_ratio = int(sys.argv[1])
 window_size = int(sys.argv[2])
 predict_size = int(sys.argv[3])
-shift_eval = int(sys.argv[4])
-batch_size = int(sys.argv[5])
-anomaly_folder = str(sys.argv[6])
+normal_folder = str(sys.argv[4])  # e.g. ryerson
+anomaly_folder = str(sys.argv[5])  # e.g. 0208_anomaly
+shift_eval = int(sys.argv[6])
+batch_size = int(sys.argv[7])
 
+
+# String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
 window_predict_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
-abnormal_series_list_path = '../../data/dataset/' + downsample_str + '/' \
-                            + 'abnormal_series_list_' + window_predict_size
-full_x_valid_path = '../../data/dataset/' + downsample_str + '/' \
-                    + 'full_x_valid_' + window_predict_size
-valid_error_df_path = '../../data/evaluation/normal/{}/valid_error_df_{}'\
-                      .format(downsample_str, window_predict_size)
-anom_error_df_list_path = '../../data/evaluation/abnormal/{}/{}/' \
-                          'anom_error_df_list_{}'.format(anomaly_folder,
-                                                         downsample_str,
-                                                         window_predict_size)
-model_path = '../../model/{}_{}_{}'.format(downsample_ratio, window_size,
-                                           predict_size)
-figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error (ds_ratio=' \
-              + str(downsample_ratio) + ', window_size=' + str(window_size) \
-              + ', predict_size=' + str(predict_size) + ')'
-figure_path = '../../plot/' + figure_name
+
+# General path
+path = '/net/adv_spectrum/data/'
+
+# Path to read featurized txt
+abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
+                    .format(downsample_str, anomaly_folder, window_predict_size)
+
+# Path to save model and full_x_valid
+full_x_valid_path = '/net/adv_spectrum/result/valid_x/full_x_valid_{}_{}'\
+                    .format(downsample_str, window_predict_size)
+model_path = '/net/adv_spectrum/model/{}/{}_{}'\
+             .format(downsample_str, downsample_ratio, window_predict_size)
+
+# Path to save valid error df and list of anomaly error df
+valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
+                      '{}/{}/valid_error_df_{}.pkl'.format(downsample_str,
+                                                           normal_folder,
+                                                           window_predict_size)
+
+anom_error_df_list_path = '/net/adv_spectrum/result/error_df/anomaly/' \
+                          '{}/{}/anom_error_df_{}.pkl'\
+                          .format(downsample_str,
+                                  anomaly_folder,
+                                  window_predict_size)
+
+# Path of figure
+figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
+              '(ds_ratio={}, w_p_size={})'\
+              .format(downsample_ratio, window_predict_size)
+figure_path = '/net/adv_spectrum/result/plot/CDF_plot_{}_{}_{}_{}.png'\
+              .format(normal_folder, anomaly_folder,
+                      downsample_ratio, window_predict_size)
+
 
 ##########################################################
-# Load Model and Data
+# 2. Load Model and Data
 ##########################################################
 model = tf.keras.models.load_model(model_path)
 
 # Change the path if you need other abnormal series. Be sure the series are
 # stored in a format of list of arrays (shape = [n, 128]).
-with open(abnormal_series_list_path, 'rb') as f:
-    abnormal_series_list = pickle.load(f)
+abnormal_series_list = []
+
+print('Start retrieving abnormal series....')
+for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
+    series = utils.txt_to_series(filename)
+    abnormal_series_list.append(series)
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_path, 'rb') as f:
     full_x_valid = pickle.load(f)
 
+
 # Comment out the next section if you do not need validation data
 ##########################################################
-# Construct MSE DataFrame for Validation Data
+# 3. Construct MSE DataFrame for Validation Data
 ##########################################################
 # Construct MSE DataFrame
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
@@ -71,7 +102,7 @@ valid_error_df.to_pickle(valid_error_df_path)
 
 
 ##########################################################
-# Construct Abnormal MSE
+# 4. Construct Abnormal MSE
 ##########################################################
 # Construct MSE DataFrame
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
@@ -98,7 +129,7 @@ with open(anom_error_df_list_path, 'wb') as f:
 
 # Comment out the following section if you do not need visualization
 ##########################################################
-# Plot CDF for Anomaly and Validation Set
+# 5. Plot CDF for Anomaly and Validation Set
 ##########################################################
 # If you need other normal data as baseline, be sure to change the following
 # line to the path you desired.
@@ -134,7 +165,7 @@ ax.get_figure().savefig(figure_path)
 
 
 ##########################################################
-# Print FP rate v.s. Detection rate
+# 6. Print FP rate v.s. Detection rate
 ##########################################################
 # Modify the following quantile to see different outcomes.
 cut = valid_error_df.quantile(0.9)[0]

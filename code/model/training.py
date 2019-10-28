@@ -1,46 +1,79 @@
 """
 Title: training.py
 Prescription: Training the rnn model
-Author: Yeol Ye
 Declaration: The LSTM structure credits to Zhijing Li
 """
 
 from tensorflow.keras.callbacks import EarlyStopping
 import utils
+import os
 import pickle
 import sys
 import tensorflow as tf
 import numpy as np
+import glob
 
+
+##########################################################
+# 1. Initialization
+##########################################################
+# Arguments
 downsample_ratio = int(sys.argv[1])
 window_size = int(sys.argv[2])
 predict_size = int(sys.argv[3])
-shift_train = int(sys.argv[4])
-shift_eval = int(sys.argv[5])
-batch_size = int(sys.argv[6])
-epochs = int(sys.argv[7])
+normal_folder = str(sys.argv[4])  # e.g. ryerson
+anomaly_folder = str(sys.argv[5])  # e.g. 0208_anomaly
+shift_train = int(sys.argv[6])
+shift_eval = int(sys.argv[7])
+batch_size = int(sys.argv[8])
+epochs = int(sys.argv[9])
 
+# String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
 window_predict_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
-normal_series_list_path = '../../data/dataset/' + downsample_str + '/' \
-                          + 'normal_series_list_' + window_predict_size
-abnormal_series_list_path = '../../data/dataset/' + downsample_str + '/' \
-                            + 'abnormal_series_list_' + window_predict_size
-full_x_valid_path = '../../data/dataset/' + downsample_str + '/' \
-                    + 'full_x_valid_' + window_predict_size
-model_path = '../../model/{}_{}_{}'.format(downsample_ratio, window_size,
-                                           predict_size)
+
+# General path
+path = '/net/adv_spectrum/data/'
+
+# Path to read featurized txt
+normal_output_path = path + 'feature/{}/normal/{}/{}/'\
+                    .format(downsample_str, normal_folder, window_predict_size)
+abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
+                    .format(downsample_str, anomaly_folder, window_predict_size)
+
+# Path to save model and full_x_valid
+full_x_valid_path = '/net/adv_spectrum/result/valid_x/full_x_valid_{}_{}.pkl'\
+                    .format(downsample_str, window_predict_size)
+model_path = '/net/adv_spectrum/model/{}/{}_{}.h5'\
+             .format(downsample_str, downsample_ratio, window_predict_size)
+
+# Check path existence
+if not os.path.exists(full_x_valid_path):
+    os.makedirs(full_x_valid_path)
+if not os.path.exists(model_path):
+    os.makedirs(model_path)
+
 
 ##########################################################
-# Load and Process Data
+# 2. Construct normal series and abnormal series
 ##########################################################
-# Load normal list and abnormal list of series
-with open(normal_series_list_path, 'rb') as f:
-    normal_series_list = pickle.load(f)
+normal_series_list = []
+abnormal_series_list = []
 
-with open(abnormal_series_list_path, 'rb') as f:
-    abnormal_series_list = pickle.load(f)
+print('Start constructing normal series....')
+for filename in sorted(glob.glob(normal_output_path + '*.txt')):
+    series = utils.txt_to_series(filename)
+    normal_series_list.append(series)
 
+print('Start constructing abnormal series....')
+for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
+    series = utils.txt_to_series(filename)
+    abnormal_series_list.append(series)
+
+
+##########################################################
+# 3. Load and Process Data
+##########################################################
 # Initiate data
 temp = normal_series_list[0].copy()
 split_time = int(temp.shape[0] * 0.8)
@@ -84,7 +117,7 @@ with open(full_x_valid_path, 'wb') as f:
 
 
 ##########################################################
-# Compile model
+# 4. Compile model
 ##########################################################
 model = tf.keras.models.\
     Sequential([tf.keras.layers.LSTM(64, return_sequences=True,
@@ -93,6 +126,7 @@ model = tf.keras.models.\
                 tf.keras.layers.LSTM(64, return_sequences=True),
                 tf.keras.layers.BatchNormalization(),
                 tf.keras.layers.LSTM(64, return_sequences=False),
+                tf.keras.layers.BatchNormalization(),
                 tf.keras.layers.Dense(128 * predict_size),
                 tf.keras.layers.Reshape((predict_size, 128))])
 
@@ -105,15 +139,16 @@ model.compile(loss='mean_squared_error',
               metrics=["mse"],
               callbacks=[es])
 
+
 ##########################################################
-# Fit model
+# 5. Fit model
 ##########################################################
 history = model.fit(full_train_set, epochs=epochs, callbacks=[es])
 model.save(model_path)
 
 
 ##########################################################
-# Model Validation and Evaluation
+# 6. Model Validation and Evaluation
 ##########################################################
 print('Validate model on valid set (using normal data):')
 model.evaluate(full_valid_set)

@@ -1,7 +1,6 @@
 """
 Title: utils.py
 Prescription: Provide helper functions
-Author: Yeol Ye
 Declaration: Function `standard()` and `extract()` credit to Zhijing Li
 """
 
