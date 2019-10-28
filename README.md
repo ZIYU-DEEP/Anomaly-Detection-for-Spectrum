@@ -36,6 +36,14 @@ A sample input parameter would be:
 - `normal_folder` = ryerson
 - `anomaly_folder` = 0208_anomaly
 
+Thus results in:
+
+```
+$ python 10 100 25 ryerson 0208_anomaly
+```
+
+
+
 
 
 ### 2.2. Training
@@ -65,6 +73,14 @@ A sample input parameter would be:
 - `shift_eval` = 125
 - `batch_size` = 256
 - `epochs` = 50
+
+Thus results in:
+
+```
+$ python 10 100 25 ryerson 0208_anomaly 25 125 256 50
+```
+
+
 
 **Note**: We suggest to use sliding window to train, such that you might specify the value of  `shift_train` equal to `predict_size`; and use non-sliding window to evaluate, such that you might specify the value of `shift_eval` equal to `window_size + shift_size`.
 
@@ -98,4 +114,11 @@ A sample input parameter would be:
 - `shift_eval` = 125
 - `batch_size` = 256
 
+Thus results in:
+
+```
+$ python 10 100 25 ryerson 0208_anomaly 125 256
+```
+
 Be sure that the input parameter in this step is consistent with the previous step.
+
