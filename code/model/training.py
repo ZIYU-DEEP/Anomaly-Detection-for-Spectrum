@@ -4,8 +4,10 @@ Prescription: Training the rnn model
 Declaration: The LSTM structure credits to Zhijing Li
 """
 
+import warnings
+warnings.filterwarnings('ignore')
+
 from tensorflow.keras.callbacks import EarlyStopping
-from timeit import default_timer as timer
 import utils
 import os
 import pickle
@@ -15,7 +17,6 @@ import warnings
 import tensorflow as tf
 import numpy as np
 
-warnings.filterwarnings('ignore')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
@@ -60,8 +61,6 @@ model_path = '/net/adv_spectrum/model/{}/{}/'\
              .format(downsample_str, normal_folder)
 model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
-model_time_filename = model_path + '{}_{}_time.txt'\
-                      .format(downsample_ratio, window_predict_size)
 
 # Check path existence
 if not os.path.exists(full_x_valid_path):
@@ -170,33 +169,17 @@ print('Fitting model...')
 history = model.fit(full_train_set, epochs=epochs, callbacks=[es])
 model.save(model_filename)
 
-model_size = os.path.getsize(model_filename)
-
 
 ##########################################################
 # 6. Model Validation and Evaluation
 ##########################################################
 print('Validate model on valid set (using normal data):')
-start = timer()
 model.evaluate(full_valid_set)
-end = timer()
-validation_time = start - end
-print('Validation spends {} seconds! Hmm...'.format(validation_time))
 
 print('Evaluate model on test set (using abnormal data):')
 for i, abnormal_set in enumerate(abnormal_set_list):
     print('Abnormal set: ', i)
     print(model.evaluate(abnormal_set))
-
-
-##########################################################
-# 7. Write model information
-##########################################################
-with open(model_time_filename, 'w') as f:
-    f.write('Model name: {}_{}.h5\n'.format(downsample_ratio,
-                                          window_predict_size))
-    f.write('Model size: {}\n'.format(model_size))
-    f.write('Validation time: {}\n'.format(validation_time))
 
 tf.keras.backend.clear_session()
 print('Training finished!')

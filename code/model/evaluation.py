@@ -3,13 +3,15 @@ Title: evaluation.py
 Prescription: Evaluate the model's anomaly detection performance on different
               anomaly inputs.
 """
+import warnings
+warnings.filterwarnings('ignore')
 
+from timeit import default_timer as timer
 import utils
 import os
 import glob
 import pickle
 import sys
-import warnings
 import matplotlib
 import tensorflow as tf
 import numpy as np
@@ -17,7 +19,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-warnings.filterwarnings('ignore')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
@@ -60,6 +61,7 @@ model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
 model_info_filename = model_path + '{}_{}_info.txt'\
                       .format(downsample_ratio, window_predict_size)
+model_size = os.path.getsize(model_filename)
 
 # Path to save valid error df and list of anomaly error df
 valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
@@ -116,11 +118,18 @@ with open(full_x_valid_filename, 'rb') as f:
 # 3. Construct MSE DataFrame for Validation Data
 ##########################################################
 print('Start constructing mse DataFrame...')
-# Construct MSE DataFrame
+# Get valid_hat and evaluate time
+start = timer()
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
                                  predict_size, shift_eval).reshape(-1, 128)
+end = timer()
+validation_time = (start - end) / (len(full_x_valid) // shift_eval)
+print('Validation spends {} seconds! Hmm...'.format(validation_time))
+
+# Get valid true
 valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size)
 
+# Create mse DataFrame
 valid_mse = np.mean(np.power(valid_hat - valid_true, 2), axis=1)
 valid_error_df = pd.DataFrame({'valid_error': valid_mse})
 
@@ -200,11 +209,16 @@ cut = valid_error_df.quantile(0.9)[0]
 i = 0
 print('False Positive Rate: 10%')
 
+# Write relevant information
 f = open(model_info_filename, 'w')
+f.write('Model name: {}_{}.h5\n'.format(downsample_ratio, window_predict_size))
+f.write('Model size: {}\n'.format(model_size))
+f.write('Validation time: {}'.format(validation_time))
 for df in anom_error_df_list:
     y = [1 if e > cut else 0 for e in df['anom_error ' + str(i)].values]
     detect_rate = sum(y) / len(y)
-    detect_str = 'Detection rate for anom_error_{}: {}\n'.format(i, detect_rate)
+    detect_str = 'Detection rate for anom_error_{} (FP rate = 0.1): {}\n'\
+                 .format(i, detect_rate)
     print(detect_str)
     f.write(detect_str)
     i += 1

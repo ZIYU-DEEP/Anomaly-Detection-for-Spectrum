@@ -3,8 +3,10 @@ Title: utils.py
 Prescription: Provide helper functions
 Declaration: Function `standard()` and `extract()` credit to Zhijing Li
 """
+
 import warnings
 warnings.filterwarnings('ignore')
+
 import numpy as np
 import tensorflow as tf
 
