@@ -50,7 +50,7 @@ abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
                     .format(downsample_str, anomaly_folder, window_predict_size)
 
 # Path to save model and full_x_valid
-full_x_valid_path = '/net/adv_spectrum/result/valid_x/'
+full_x_valid_path = '/net/adv_spectrum/result/x_valid/'
 full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
                         .format(downsample_str,
                                 normal_folder,
