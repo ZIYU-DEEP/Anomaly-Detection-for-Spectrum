@@ -60,7 +60,7 @@ model_path = '/net/adv_spectrum/model/{}/{}/'\
              .format(downsample_str, normal_folder)
 model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
-model_info_filename = model_path + '{}_{}_info.txt'\
+model_time_filename = model_path + '{}_{}_time.txt'\
                       .format(downsample_ratio, window_predict_size)
 
 # Check path existence
@@ -192,7 +192,7 @@ for i, abnormal_set in enumerate(abnormal_set_list):
 ##########################################################
 # 7. Write model information
 ##########################################################
-with open(model_info_filename, 'w') as f:
+with open(model_time_filename, 'w') as f:
     f.write('Model name: {}_{}.h5\n'.format(downsample_ratio,
                                           window_predict_size))
     f.write('Model size: {}\n'.format(model_size))
