@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="524a1f09-7bf4-41f8-8b29-01207f094d08" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/code/model/boxplot_valid.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/ziyuye.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/ziyuye.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/model/evaluation.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/model/evaluation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/model/featurization.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/model/featurization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/model/boxplot_valid.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/model/boxplot_valid.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,13 +36,13 @@
         <counts>
           <entry key="Python Console" value="355" />
           <entry key="dummy" value="8" />
-          <entry key="py" value="3250" />
+          <entry key="py" value="3873" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="8" />
-          <entry key="Python" value="3605" />
+          <entry key="Python" value="4228" />
         </counts>
       </usages-collector>
     </session>
@@ -53,7 +52,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/model/featurization_old.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
+            <state relative-caret-position="-210">
               <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
             </state>
           </provider>
@@ -80,22 +79,22 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/model/evaluation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="67" column="68" lean-forward="true" selection-start-line="67" selection-start-column="68" selection-end-line="67" selection-end-column="68" />
+            <state relative-caret-position="602">
+              <caret line="201" selection-start-line="201" selection-end-line="201" selection-end-column="40" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/model/boxplot_valid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="26" selection-start-line="26" selection-end-line="26" />
+            <state relative-caret-position="690">
+              <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
               <folding>
-                <element signature="e#89#99#0" expanded="true" />
+                <element signature="e#89#98#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -135,8 +134,9 @@
         <option value="$PROJECT_DIR$/code/model/utils.py" />
         <option value="$PROJECT_DIR$/code/model/training.py" />
         <option value="$PROJECT_DIR$/code/model/featurization.py" />
-        <option value="$PROJECT_DIR$/code/model/boxplot_valid.py" />
         <option value="$PROJECT_DIR$/code/model/evaluation.py" />
+        <option value="$PROJECT_DIR$/code/model/featurization_old.py" />
+        <option value="$PROJECT_DIR$/code/model/boxplot_valid.py" />
       </list>
     </option>
   </component>
@@ -296,13 +296,6 @@
         <state relative-caret-position="-2431" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/featurization_old.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/code/model/featurization.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="810">
@@ -313,13 +306,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/training.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1710">
-          <caret line="95" column="7" selection-start-line="95" selection-start-column="7" selection-end-line="95" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/code/model/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
@@ -327,20 +313,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/boxplot_valid.py">
+    <entry file="file://$PROJECT_DIR$/code/model/featurization_old.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="26" selection-start-line="26" selection-end-line="26" />
-          <folding>
-            <element signature="e#89#99#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-210">
+          <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/model/training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1710">
+          <caret line="95" column="7" selection-start-line="95" selection-start-column="7" selection-end-line="95" selection-end-column="25" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/model/evaluation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="67" column="68" lean-forward="true" selection-start-line="67" selection-start-column="68" selection-end-line="67" selection-end-column="68" />
+        <state relative-caret-position="602">
+          <caret line="201" selection-start-line="201" selection-end-line="201" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/model/boxplot_valid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="690">
+          <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
+          <folding>
+            <element signature="e#89#98#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

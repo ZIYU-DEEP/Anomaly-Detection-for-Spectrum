@@ -2,6 +2,7 @@
   <dictionary name="ziyuye">
     <words>
       <w>anom</w>
+      <w>boxplot</w>
       <w>cuda</w>
       <w>dashdot</w>
       <w>downsample</w>
@@ -9,6 +10,7 @@
       <w>featurized</w>
       <w>quantile</w>
       <w>ryerson</w>
+      <w>whitegrid</w>
     </words>
   </dictionary>
 </component>
