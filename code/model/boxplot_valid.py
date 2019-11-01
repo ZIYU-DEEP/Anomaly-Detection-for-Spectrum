@@ -40,3 +40,5 @@ ax.set_ylim(bottom=0, top=1.5)
 ax.yaxis.set_major_locator(ticker.MultipleLocator(0.15))
 sns.despine()
 ax.get_figure().savefig(path + 'boxplot_valid.png')
+
+print('Finished drawing the figure!')
