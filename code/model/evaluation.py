@@ -66,13 +66,14 @@ model_size = os.path.getsize(model_filename)
 # Path to save valid error df and list of anomaly error df
 valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
                       '{}/{}/'.format(downsample_str, normal_folder)
-valid_error_df_filename = valid_error_df_path + 'valid_error_df_{}.pkl'\
-                          .format(window_predict_size)
+valid_error_df_filename = valid_error_df_path + 'valid_error_df_{}_{}.pkl'\
+                          .format(normal_folder, window_predict_size)
 
 anom_error_df_list_path = '/net/adv_spectrum/result/error_df/anomaly/' \
                           '{}/{}/'.format(downsample_str, anomaly_folder)
-anom_error_df_list_filename = valid_error_df_path + 'anom_error_df_{}.pkl'\
-                              .format(window_predict_size)
+anom_error_df_list_filename = anom_error_df_list_path + \
+                              'anom_error_df_{}_{}.pkl'\
+                              .format(normal_folder, window_predict_size)
 
 # Path of figure
 figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
