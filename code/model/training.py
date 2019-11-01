@@ -13,7 +13,6 @@ import os
 import pickle
 import sys
 import glob
-import warnings
 import tensorflow as tf
 import numpy as np
 

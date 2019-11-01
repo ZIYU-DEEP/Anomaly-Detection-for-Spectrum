@@ -18,7 +18,7 @@ import matplotlib.ticker as ticker
 path = '/net/adv_spectrum/result/error_df/valid/'
 base_df = pd.DataFrame()
 i = 0
-for filename in glob.glob(path + '**/**/*.pkl'):
+for filename in sorted(glob.glob(path + '**/**/*.pkl')):
     with open(filename, 'rb') as f:
         df = pickle.load(f)
         basename = os.path.basename(filename)\
