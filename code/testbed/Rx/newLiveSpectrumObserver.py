@@ -22,14 +22,14 @@ AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 # key values
 filename = sys.argv[1]
+out_filename = sys.argv[2]
+model_filename = sys.argv[3]
 core = 1
 power_level = -20
 thresh = 5
 downsample = 10  #downsample rate
 timestamps = 100
 predict_len = 25
-model_filename = '100_25.h5'
-out_filename = './plotData/usrpSameSource0.txt'
 batch_size = 64
 timesteps = 50
 predict_steps = 25
@@ -208,4 +208,4 @@ def model_forecast(model, series):
 if __name__ == "__main__":
 	# test_LSTM1(t_filename, model_filename, out_filename, out_filename_cdf)
     multicore_live_monitor(core, range(core))
-    # live_monitor(1)
+	# live_monitor(1)
