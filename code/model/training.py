@@ -16,7 +16,7 @@ import glob
 import tensorflow as tf
 import numpy as np
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 ##########################################################
@@ -35,7 +35,7 @@ epochs = int(sys.argv[9])
 gpu_no = str(sys.argv[10])
 
 # Set gpu environment
-os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
+# os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
 
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
