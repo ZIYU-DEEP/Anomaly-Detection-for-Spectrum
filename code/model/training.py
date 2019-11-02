@@ -4,8 +4,6 @@ Prescription: Training the rnn model
 Declaration: The LSTM structure credits to Zhijing Li
 """
 
-import warnings
-warnings.filterwarnings('ignore')
 
 from tensorflow.keras.callbacks import EarlyStopping
 import utils
@@ -78,12 +76,14 @@ print('Start constructing normal series....')
 for filename in sorted(glob.glob(normal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
+    print(series.shape)
     normal_series_list.append(series)
 
 print('Start constructing abnormal series....')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
+    print(series.shape)
     abnormal_series_list.append(series)
 
 
@@ -152,13 +152,13 @@ model = tf.keras.models.\
                 tf.keras.layers.Dense(128 * predict_size),
                 tf.keras.layers.Reshape((predict_size, 128))])
 
-es = EarlyStopping(monitor='mse',
+es = EarlyStopping(monitor='mean_squared_error',
                    min_delta=0.0001,
                    patience=5)
 
 model.compile(loss='mean_squared_error',
               optimizer='adam',
-              metrics=["mse"])
+              metrics=["mean_squared_error"])
 
 
 ##########################################################
