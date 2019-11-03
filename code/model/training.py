@@ -33,7 +33,7 @@ epochs = int(sys.argv[9])
 gpu_no = str(sys.argv[10])
 
 # Set gpu environment
-# os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
 
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
@@ -91,34 +91,19 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
 # 3. Load and Process Data
 ##########################################################
 print('Start loading and processing data...')
-# Initiate data
-temp = normal_series_list[0].copy()
-split_time = int(temp.shape[0] * 0.8)
-temp_x_train = temp[:split_time]
-temp_x_valid = temp[split_time:]
-full_x_valid = temp_x_valid.copy()
+# Create full_x_valid
+# (Note this is based on the assumption that all the normal list are in the
+# correct order and are consistent)
+full_x = np.array(normal_series_list).reshape((-1, 128)).astype('float64')
+split_time = int(full_x.shape[0] * 0.8)
+full_x_train = full_x[:split_time]
+full_x_valid = full_x[split_time:]
 
-# Initiate training and valid set
-full_train_set = utils.windowed_dataset(temp_x_train, window_size, batch_size,
-                                        predict_size, shift_train)
-full_valid_set = utils.windowed_dataset(temp_x_valid, window_size, batch_size,
+# Create train set and valid set
+full_train_set = utils.windowed_dataset(full_x_train, window_size, batch_size,
                                         predict_size, shift_eval)
-
-# Create full train set and full valid set
-for series in normal_series_list[1:]:
-    split_time = int(series.shape[0] * 0.8)
-    x_train = series[:split_time]
-    x_valid = series[split_time:]
-    full_x_valid = np.concatenate((full_x_valid, x_valid))
-
-    train_set = utils.windowed_dataset(x_train, window_size, batch_size,
-                                       predict_size, shift_train)
-    valid_set = utils.windowed_dataset(x_valid, window_size, batch_size,
-                                       predict_size, shift_eval)
-
-    full_train_set = full_train_set.concatenate(train_set)
-    full_valid_set = full_valid_set.concatenate(valid_set)
-
+full_valid_set = utils.windowed_dataset(full_x_valid, window_size, batch_size,
+                                        predict_size, shift_eval)
 
 # Create full abnormal series list
 abnormal_set_list = []
@@ -126,7 +111,6 @@ for series in abnormal_series_list:
     abnormal_set = utils.windowed_dataset(series, window_size, batch_size,
                                           predict_size, shift_eval)
     abnormal_set_list.append(abnormal_set)
-
 
 # Save full_x_valid for future threshold use
 with open(full_x_valid_filename, 'wb') as f:

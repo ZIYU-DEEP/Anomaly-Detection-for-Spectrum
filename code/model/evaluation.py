@@ -19,8 +19,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 
 ##########################################################
 # 1. Initialization
