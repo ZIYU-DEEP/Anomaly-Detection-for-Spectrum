@@ -57,8 +57,10 @@ model_path = '/net/adv_spectrum/model/{}/{}/'\
              .format(downsample_str, normal_folder)
 model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
-model_info_filename = model_path + '{}_{}_info.txt'\
-                      .format(downsample_ratio, window_predict_size)
+model_info_filename = model_path + '{}_{}_{}_info.txt'\
+                      .format(anomaly_folder,
+                              downsample_ratio,
+                              window_predict_size)
 model_size = os.path.getsize(model_filename)
 
 # Path to save valid error df and list of anomaly error df
@@ -79,7 +81,9 @@ figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
               .format(downsample_ratio, window_predict_size)
 figure_path = '/net/adv_spectrum/result/plot/'
 figure_filename = figure_path + 'CDF_plot_{}_{}_{}_{}.png'\
-                  .format(normal_folder, anomaly_folder.split('/')[1], downsample_ratio,
+                  .format(normal_folder,
+                          anomaly_folder,
+                          downsample_ratio,
                           window_predict_size)
 
 # Check path existence
@@ -104,6 +108,7 @@ abnormal_series_list = []
 
 print('Start retrieving abnormal series....')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
+    print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
 
@@ -210,7 +215,7 @@ print('False Positive Rate: 10%')
 
 # Write relevant information
 f = open(model_info_filename, 'w')
-f.write('Model name: {}_{}.h5\n'.format(downsample_ratio, window_predict_size))
+f.write('Model Info filename: {}\n'.format(model_info_filename))
 f.write('Model size: {}\n'.format(model_size))
 f.write('Validation time: {}'.format(validation_time))
 for df in anom_error_df_list:

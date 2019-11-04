@@ -14,8 +14,6 @@ import glob
 import tensorflow as tf
 import numpy as np
 
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 
 ##########################################################
 # 1. Initialization
@@ -25,12 +23,11 @@ downsample_ratio = int(sys.argv[1])
 window_size = int(sys.argv[2])
 predict_size = int(sys.argv[3])
 normal_folder = str(sys.argv[4])  # e.g. ryerson
-anomaly_folder = str(sys.argv[5])  # e.g. 0208_anomaly
-shift_train = int(sys.argv[6])
-shift_eval = int(sys.argv[7])
-batch_size = int(sys.argv[8])
-epochs = int(sys.argv[9])
-gpu_no = str(sys.argv[10])
+shift_train = int(sys.argv[5])
+shift_eval = int(sys.argv[6])
+batch_size = int(sys.argv[7])
+epochs = int(sys.argv[8])
+gpu_no = str(sys.argv[9])
 
 # Set gpu environment
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
@@ -45,8 +42,6 @@ path = '/net/adv_spectrum/data/'
 # Path to read featurized txt
 normal_output_path = path + 'feature/{}/normal/{}/{}/'\
                     .format(downsample_str, normal_folder, window_predict_size)
-abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
-                    .format(downsample_str, anomaly_folder, window_predict_size)
 
 # Path to save model and full_x_valid
 full_x_valid_path = '/net/adv_spectrum/result/x_valid/'
@@ -55,7 +50,7 @@ full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
                                 normal_folder,
                                 window_predict_size)
 model_path = '/net/adv_spectrum/model/{}/{}/'\
-             .format(downsample_str, anomaly_folder)
+             .format(downsample_str, normal_folder)
 model_filename = model_path + '{}_{}.h5'\
                  .format(downsample_ratio, window_predict_size)
 
@@ -70,7 +65,6 @@ if not os.path.exists(model_path):
 # 2. Construct normal series and abnormal series
 ##########################################################
 normal_series_list = []
-abnormal_series_list = []
 
 print('Start constructing normal series....')
 for filename in sorted(glob.glob(normal_output_path + '*.txt')):
@@ -78,13 +72,6 @@ for filename in sorted(glob.glob(normal_output_path + '*.txt')):
     series = utils.txt_to_series(filename)
     print(series.shape)
     normal_series_list.append(series)
-
-print('Start constructing abnormal series....')
-for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
-    print(filename)
-    series = utils.txt_to_series(filename)
-    print(series.shape)
-    abnormal_series_list.append(series)
 
 
 ##########################################################
@@ -105,12 +92,6 @@ full_train_set = utils.windowed_dataset(full_x_train, window_size, batch_size,
 full_valid_set = utils.windowed_dataset(full_x_valid, window_size, batch_size,
                                         predict_size, shift_eval)
 
-# Create full abnormal series list
-abnormal_set_list = []
-for series in abnormal_series_list:
-    abnormal_set = utils.windowed_dataset(series, window_size, batch_size,
-                                          predict_size, shift_eval)
-    abnormal_set_list.append(abnormal_set)
 
 # Save full_x_valid for future threshold use
 with open(full_x_valid_filename, 'wb') as f:
@@ -158,11 +139,6 @@ model.save(model_filename)
 ##########################################################
 print('Validate model on valid set (using normal data):')
 model.evaluate(full_valid_set)
-
-print('Evaluate model on test set (using abnormal data):')
-for i, abnormal_set in enumerate(abnormal_set_list):
-    print('Abnormal set: ', i)
-    print(model.evaluate(abnormal_set))
 
 tf.keras.backend.clear_session()
 print('Training finished!')
