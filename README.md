@@ -59,7 +59,7 @@ This step is to fit, validate and evaluate the model. In addition, it would also
 In the directory of the code script, run the following code in terminal:
 
 ```
-$ python training.py downsample_ratio window_size predict_size normal_folder anomaly_folder shift_train shift_eval batch_size epochs gpu_no
+$ python training.py downsample_ratio window_size predict_size normal_folder shift_train shift_eval batch_size epochs gpu_no
 ```
 
 A sample input parameter would be:
@@ -68,7 +68,6 @@ A sample input parameter would be:
 - `window_size` = 100
 - `predict_size` = 25
 - `normal_folder` = ryerson
-- `anomaly_folder` = 0208_anomaly
 - `shift_train` = 25
 - `shift_eval` = 125
 - `batch_size` = 256
@@ -78,7 +77,7 @@ A sample input parameter would be:
 Thus results in:
 
 ```
-$ python training.py 10 100 25 ryerson 0208_anomaly 25 125 256 50 3
+$ python training.py 10 100 25 ryerson 25 125 256 50 3
 ```
 
 **Note**: We suggest to use sliding window to train, such that you might specify the value of  `shift_train` equal to `predict_size`; and use non-sliding window to evaluate, such that you might specify the value of `shift_eval` equal to `window_size + predict_size`.
