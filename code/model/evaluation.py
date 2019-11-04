@@ -79,7 +79,7 @@ figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
               .format(downsample_ratio, window_predict_size)
 figure_path = '/net/adv_spectrum/result/plot/'
 figure_filename = figure_path + 'CDF_plot_{}_{}_{}_{}.png'\
-                  .format(normal_folder, anomaly_folder, downsample_ratio,
+                  .format(normal_folder, anomaly_folder.split('/')[1], downsample_ratio,
                           window_predict_size)
 
 # Check path existence
