@@ -71,7 +71,7 @@ anom_error_df_list_path = '/net/adv_spectrum/result/error_df/anomaly/' \
                           '{}/{}/'.format(downsample_str, anomaly_folder)
 anom_error_df_list_filename = anom_error_df_list_path + \
                               'anom_error_df_{}_{}.pkl'\
-                              .format(normal_folder, window_predict_size)
+                              .format(anomaly_folder, window_predict_size)
 
 # Path of figure
 figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
