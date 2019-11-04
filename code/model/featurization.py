@@ -53,6 +53,3 @@ for filename in sorted(glob.glob(raw_input_path + '*.txt')):
     utils.extract_method3(filename, open(out, 'w'), window_size, predict_size)
 
 print('Featurization finished! : )')
-
-for filename in sorted(glob.glob('/net/adv_spectrum/data/raw/abnormal/0208_anomaly/' + '*.dat')):
-    print(filename)
