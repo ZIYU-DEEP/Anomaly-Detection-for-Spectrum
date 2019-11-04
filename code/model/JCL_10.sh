@@ -1,4 +1,4 @@
-#!_bin_bash
+##!_bin_bash
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/normal/JCL 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/JCL/sameFBS 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/JCL/diffFBS 10
