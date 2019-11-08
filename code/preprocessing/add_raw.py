@@ -76,11 +76,11 @@ def add_diff_batch(path, real_BS, power_level):
         print(G_path + ' Created')
     for file in glob.glob(in_path + '*.dat'):
         if file != real_BS:
-            file_out = real_BS.split('/')[-1].split('_')[0] + '_' + file
+            file_out = real_BS.split('/')[-1].split('_')[0] + '_' + file.split('/')[-1]
             print('start adding ' + file + ' and ' + real_BS +', on power level ' + str(power_level))
             add_diff_raw(in_path + real_BS, file, G_path + file_out, time_interval, power_level)
 
 
-add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', '1518560024_880M_5m.dat')
+#add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', '1518560024_880M_5m.dat')
 for i in range(10):
     add_diff_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_diff', '1518560024_880M_5m.dat', i*3 - 3)
