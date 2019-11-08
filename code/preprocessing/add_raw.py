@@ -75,6 +75,6 @@ def add_diff_batch(path, real_BS, power_level):
             add_diff_raw(real_BS, file, G_path + file_out, time_interval, power_level)
 
 
-add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', '1518560024_880M_5m.dat')
+add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', in_path + '1518560024_880M_5m.dat')
 for i in range(10):
-    add_diff_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_diff', '1518560024_880M_5m.dat', i*3 - 3)
+    add_diff_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_diff', in_path + '1518560024_880M_5m.dat', i*3 - 3)
