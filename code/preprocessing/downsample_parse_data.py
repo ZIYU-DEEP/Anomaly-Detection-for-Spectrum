@@ -18,7 +18,8 @@ print('Start creating folder...')
 downsample_str = 'downsample_' + str(downsample)
 output_path = path.replace('raw', 'downsample/' + downsample_str + '/') # e.g. 
 if not os.path.exists(output_path):
-	os.makedirs(output_path)
+	os.mkdir(output_path)
+	print(output_path + 'is created')
 
 print('Start downsampling...')
 for filename in glob.glob(path + '/*.dat'):
