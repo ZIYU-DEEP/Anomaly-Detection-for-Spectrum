@@ -61,9 +61,10 @@ def add_same_batch(path, fake_BS):
         print(path + ' Created')
     for file in glob.glob(in_path + '*.dat'):
         print(file)
-        print('start adding ' + file + ' and ' + real_BS)
+        print('start adding ' + file + ' and ' + fake_BS)
         if file != fake_BS:
-            file_out = file.split('_')[0] + '_' + fake_BS
+            file_out = file.split('/')[-1].split('_')[0] + '_' + fake_BS
+            print(file_out)
             add_same_raw(file, in_path + fake_BS, path + file_out, time_interval)
 
 
@@ -75,7 +76,7 @@ def add_diff_batch(path, real_BS, power_level):
         print(G_path + ' Created')
     for file in glob.glob(in_path + '*.dat'):
         if file != real_BS:
-            file_out = real_BS.split('_')[0] + '_' + file
+            file_out = real_BS.split('/')[-1].split('_')[0] + '_' + file
             print('start adding ' + file + ' and ' + real_BS +', on power level ' + str(power_level))
             add_diff_raw(in_path + real_BS, file, G_path + file_out, time_interval, power_level)
 
