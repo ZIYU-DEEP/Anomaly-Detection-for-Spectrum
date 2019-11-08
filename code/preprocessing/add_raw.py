@@ -64,7 +64,7 @@ def add_same_batch(path, fake_BS):
         print('start adding ' + file + ' and ' + real_BS)
         if file != fake_BS:
             file_out = file.split('_')[0] + '_' + fake_BS
-            add_same_raw(file, fake_BS, path + file_out, time_interval)
+            add_same_raw(file, in_path + fake_BS, path + file_out, time_interval)
 
 
 def add_diff_batch(path, real_BS, power_level):
@@ -77,7 +77,7 @@ def add_diff_batch(path, real_BS, power_level):
         if file != real_BS:
             file_out = real_BS.split('_')[0] + '_' + file
             print('start adding ' + file + ' and ' + real_BS +', on power level ' + str(power_level))
-            add_diff_raw(real_BS, file, G_path + file_out, time_interval, power_level)
+            add_diff_raw(in_path + real_BS, file, G_path + file_out, time_interval, power_level)
 
 
 add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', '1518560024_880M_5m.dat')
