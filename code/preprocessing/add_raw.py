@@ -58,7 +58,10 @@ def add_same_batch(path, fake_BS):
     ## add same FBS signal on a batch series
     if not os.path.exists(path):
         os.mkdir(path)
+        print(path + ' Created')
     for file in glob.glob(in_path + '*.dat'):
+        print(file)
+        print('start adding ' + file + ' and ' + real_BS)
         if file != fake_BS:
             file_out = file.split('_')[0] + '_' + fake_BS
             add_same_raw(file, fake_BS, path + file_out, time_interval)
@@ -69,12 +72,14 @@ def add_diff_batch(path, real_BS, power_level):
     G_path = path + '_G' + str(power_level) + '/'
     if not os.path.exists(G_path):
         os.mkdir(G_path)
+        print(G_path + ' Created')
     for file in glob.glob(in_path + '*.dat'):
         if file != real_BS:
             file_out = real_BS.split('_')[0] + '_' + file
+            print('start adding ' + file + ' and ' + real_BS +', on power level ' + str(power_level))
             add_diff_raw(real_BS, file, G_path + file_out, time_interval, power_level)
 
 
-add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', in_path + '1518560024_880M_5m.dat')
+add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', '1518560024_880M_5m.dat')
 for i in range(10):
-    add_diff_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_diff', in_path + '1518560024_880M_5m.dat', i*3 - 3)
+    add_diff_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_diff', '1518560024_880M_5m.dat', i*3 - 3)
