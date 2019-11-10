@@ -128,7 +128,7 @@ if not os.path.exists(error_df_path):
 if not os.path.exists(figure_CDF_path):
     os.makedirs(figure_CDF_path)
 if not os.path.exists(figure_time_path):
-    os.makedirs(figure_CDF_path)
+    os.makedirs(figure_time_path)
 
 
 ##########################################################
