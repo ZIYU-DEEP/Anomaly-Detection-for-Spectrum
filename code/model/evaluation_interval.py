@@ -217,7 +217,7 @@ anom_down_error_df_pd = pd.DataFrame()
 full_anom_error_df_list = []
 
 for i in range(len(anom_hat_list)):
-    print('Processing the i th anom hat list')
+    print('Processing the {} th anom hat list!'.format(i))
     nom_mse = []
     anom_mse = []
     anom_up_mse = []
@@ -225,12 +225,13 @@ for i in range(len(anom_hat_list)):
     anom_hat = anom_hat_list[i]
     anom_true = anom_true_list[i]
     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
-    
+
     # Get full anom error
     full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
     full_anom_error_df_list.append(full_anom_error_df)
 
     # Draw the i th time mse of full anom error
+    print('Drawing the {} th full anom time mse plot!'.format(i))
     plt.figure(figsize=(23, 6))
     ax = sns.lineplot(x=full_anom_error_df.index,
                       y=full_anom_error_df.iloc[:, 0])
@@ -286,6 +287,7 @@ for i in range(len(anom_hat_list)):
     anom_down_error_df_pd = anom_down_error_df_pd.append(anom_down_error_df)
 
 # Save MSE DataFrame
+print('Saving the strange mse DataFrames!')
 with open(full_anom_error_df_list_filename, 'wb') as f:
     joblib.dump(full_anom_error_df_list, f)
 
@@ -306,7 +308,7 @@ with open(anom_down_error_df_filename, 'wb') as f:
 ##########################################################
 # 5. Plot CDF for Anomaly and Validation Set
 ##########################################################
-print('Start plotting...')
+print('Start plotting CDF...')
 # If you need other normal data as baseline, be sure to change the following
 # line to the path you desired.
 with open(valid_error_df_filename, 'rb') as f:
