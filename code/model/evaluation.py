@@ -154,7 +154,6 @@ anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
 anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
                   for i in abnormal_series_list]
 
-anom_mse_list = []
 anom_error_df_list = []
 
 for i in range(len(anom_hat_list)):
@@ -162,7 +161,6 @@ for i in range(len(anom_hat_list)):
     anom_true = anom_true_list[i]
     anom_mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
     anom_error_df = pd.DataFrame({'anom_error ' + str(i): anom_mse})
-    anom_mse_list.append(anom_mse)
     anom_error_df_list.append(anom_error_df)
 
 # Save MSE DataFrame

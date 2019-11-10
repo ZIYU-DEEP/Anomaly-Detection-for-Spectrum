@@ -37,14 +37,16 @@ batch_size = int(sys.argv[7])
 gpu_no = str(sys.argv[8])
 
 # Interval values
-all_samp = 200000000 * 2 # all samp per file
-samp_sec = 5000000 * 2 # sample rate, each sample has I/Q 2 values
-interval = 5 # in seconds
-inter_samp = samp_sec * interval / downsample_ratio # in samp number
-trash_count = 102400 # begining samples being throwed
+all_samp = 200000000 * 2  # all samp per file
+samp_sec = 5000000 * 2  # sample rate, each sample has I/Q 2 values
+interval = 5  # in seconds
+inter_samp = samp_sec * interval / downsample_ratio  # in samp number
+trash_count = 102400  # begining samples being throwed
+
 # calculate the intervals in prediction window
-ini_anom = int((((inter_samp - trash_count) / 256) - window_size) // shift_eval)
-anom_interval = int(((inter_samp / 256)  - window_size) // shift_eval)
+ini_anom = int((((inter_samp - trash_count) / 256) - window_size)
+               // shift_eval)
+anom_interval = int(((inter_samp / 256) - window_size) // shift_eval)
 up_down_interval = int(window_size // shift_eval + 1)
 
 # Set gpu environment
@@ -59,7 +61,9 @@ path = '/net/adv_spectrum/data/'
 
 # Path to read featurized txt
 abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
-                    .format(downsample_str, anomaly_folder, window_predict_size)
+                    .format(downsample_str,
+                            anomaly_folder,
+                            window_predict_size)
 
 # Path to save model and full_x_valid
 full_x_valid_path = '/net/adv_spectrum/result/x_valid/'
@@ -83,41 +87,48 @@ valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
 valid_error_df_filename = valid_error_df_path + 'valid_error_df_{}_{}.pkl'\
                           .format(normal_folder, window_predict_size)
 
-anom_error_df_list_path = '/net/adv_spectrum/result/error_df/anomaly/' \
-                          '{}/{}/'.format(downsample_str, anomaly_folder)
-anom_error_df_list_filename = anom_error_df_list_path + \
-                              'anom_error_df_{}_{}.pkl'\
-                              .format(normal_folder, window_predict_size)
-nom_error_df_list_filename = anom_error_df_list_path + \
-                              'nom_error_df_{}_{}.pkl'\
-                              .format(normal_folder, window_predict_size)
-anom_up_error_df_list_filename = anom_error_df_list_path + \
-                              'anom_up_error_df_{}_{}.pkl'\
-                              .format(normal_folder, window_predict_size)
-anom_down_error_df_list_filename = anom_error_df_list_path + \
-                              'anom_down_error_df_{}_{}.pkl'\
-                              .format(normal_folder, window_predict_size)
+error_df_path = '/net/adv_spectrum/result/error_df/anomaly/{}/{}/'\
+                .format(downsample_str, anomaly_folder)
+full_anom_error_df_list_filename = error_df_path + \
+                                   'full_anom_error_df_list_{}_{}_{}.pkl'\
+                                   .format(normal_folder,
+                                           window_predict_size,
+                                           shift_eval)
+anom_error_df_filename = error_df_path + \
+                         'anom_error_df_{}_{}_{}.pkl'\
+                         .format(normal_folder,
+                                 window_predict_size,
+                                 shift_eval)
+nom_error_df_filename = anom_error_df_filename.replace('anom_', 'nom_')
+anom_up_error_df_filename = anom_error_df_filename.replace('anom_', 'anom_up_')
+anom_down_error_df_filename = anom_up_error_df_filename.replace('up', 'down')
+
 
 # Path of figure
-figure_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
-              '(ds_ratio={}, w_p_size={})'\
-              .format(downsample_ratio, window_predict_size)
-figure_path = '/net/adv_spectrum/result/plot/'
-figure_filename = figure_path + 'CDF_plot_{}_{}_{}_{}.png'\
-                  .format(normal_folder,
-                          anomaly_folder,
-                          downsample_ratio,
-                          window_predict_size)
+figure_CDF_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
+              '(norm = {}, anom = {}, ds_ratio={}, w_p_size={})'\
+              .format(normal_folder, anomaly_folder,
+                      downsample_ratio, window_predict_size)
+figure_CDF_path = '/net/adv_spectrum/result/plot/CDF/'
+figure_time_path = '/net/adv_spectrum/result/plot/time_mse/'
+figure_CDF_filename = figure_CDF_path + 'CDF_plot_{}_{}_{}_{}_{}.png'\
+                      .format(normal_folder,
+                              anomaly_folder,
+                              downsample_ratio,
+                              window_predict_size,
+                              shift_eval)
 
 # Check path existence
 if not os.path.exists(full_x_valid_path):
     os.makedirs(full_x_valid_path)
 if not os.path.exists(valid_error_df_path):
     os.makedirs(valid_error_df_path)
-if not os.path.exists(anom_error_df_list_path):
-    os.makedirs(anom_error_df_list_path)
-if not os.path.exists(figure_path):
-    os.makedirs(figure_path)
+if not os.path.exists(error_df_path):
+    os.makedirs(error_df_path)
+if not os.path.exists(figure_CDF_path):
+    os.makedirs(figure_CDF_path)
+if not os.path.exists(figure_time_path):
+    os.makedirs(figure_CDF_path)
 
 
 ##########################################################
@@ -154,7 +165,10 @@ validation_time = (start - end) / (len(full_x_valid) // shift_eval)
 print('Validation spends {} seconds! Hmm...'.format(validation_time))
 
 # Get valid true
-valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size)
+if shift_eval == predict_size + window_size:
+    valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size)
+else:
+    valid_true = full_x_valid[window_size:, :].reshape((-1, 128))
 
 # Create mse DataFrame
 valid_mse = np.mean(np.power(valid_hat - valid_true, 2), axis=1)
@@ -165,37 +179,45 @@ valid_error_df.to_pickle(valid_error_df_filename)
 
 
 ##########################################################
-# 4. Construct Normal and Abnormal MSE from combined data
+# 4. Construct MSE DataFrame for Full Anom Data
 ##########################################################
 # Construct MSE DataFrame
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
                                       predict_size, shift_eval).reshape(-1, 128)
                  for i in abnormal_series_list]
-anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
-                  for i in abnormal_series_list]
 
+if shift_eval == predict_size + window_size:
+    anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
+                      for i in abnormal_series_list]
+else:
+    anom_true_list = [i[window_size:, :].reshape((-1, 128))
+                      for i in abnormal_series_list]
+
+
+##########################################################
+# 5. Construct Normal and Abnormal MSE from combined data
+##########################################################
 # MSE of intervals with only BS data in it
 nom_mse = []
 nom_error_df_pd = pd.DataFrame()
-# nom_mse_list = []
-# nom_error_df_list = []
+
 # MSE of intervals with BS + 'FBS' data in it
 anom_mse = []
 anom_error_df_pd = pd.DataFrame()
-# anom_mse_list = []
-# anom_error_df_list = []
+
 # MSE of moments when 'FBS' is just on
 anom_up_mse = []
 anom_up_error_df_pd = pd.DataFrame()
-# anom_up_mse_list = []
-# anom_up_error_df_list = []
+
 # MSE of moments when 'FBS' is just off
 anom_down_mse = []
 anom_down_error_df_pd = pd.DataFrame()
-# anom_down_mse_list = []
-# anom_down_error_df_list = []
+
+# MSE of full data
+full_anom_error_df_list = []
 
 for i in range(len(anom_hat_list)):
+    print('Processing the i th anom hat list')
     nom_mse = []
     anom_mse = []
     anom_up_mse = []
@@ -203,59 +225,81 @@ for i in range(len(anom_hat_list)):
     anom_hat = anom_hat_list[i]
     anom_true = anom_true_list[i]
     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
-    nom_mse = [mse[0: ini_anom - up_down_interval]]
-#    print(nom_mse)
-    for i in range(int(all_samp /(2 * samp_sec))):
-        nom_mse.append(mse[ini_anom + anom_interval * (2*i -1) + up_down_interval:
-                           ini_anom + anom_interval * (2*i) - up_down_interval])
-        anom_mse.append(mse[ini_anom + (2*i) * anom_interval + up_down_interval :
-                            ini_anom + (2 * i + 1) * anom_interval - up_down_interval])
-        anom_up_mse.append(mse[ini_anom + anom_interval * (2*i) - up_down_interval:
-                               ini_anom + (2*i) * anom_interval + up_down_interval])
-        anom_down_mse.append(mse[ini_anom + (2*i + 1) * anom_interval - up_down_interval :
-                                 ini_anom + (2*i + 1) * anom_interval + up_down_interval])
+    
+    # Get full anom error
+    full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
+    full_anom_error_df_list.append(full_anom_error_df)
 
-#    print(nom_mse)
+    # Draw the i th time mse of full anom error
+    plt.figure(figsize=(23, 6))
+    ax = sns.lineplot(x=full_anom_error_df.index,
+                      y=full_anom_error_df.iloc[:, 0])
+    plt.xlabel('Time')
+    plt.ylabel('MSE')
+    sns.despine()
+    figure_time_name = 'time_mse_{}_{}_{}_{}_{}_{}.png'\
+                       .format(normal_folder, anomaly_folder, i,
+                               downsample_ratio, window_predict_size,
+                               shift_eval)
+    figure_time_filename = figure_time_path + figure_time_name
+    ax.get_figure().savefig(figure_time_filename)
+
+    # Get nom, anom, anom_up, anom_down
+    nom_mse = [mse[0: (ini_anom - up_down_interval)]]
+
+    for j in range(int(all_samp / (2 * samp_sec))):
+        nom_mse.append(mse[ini_anom + anom_interval * (2 * j - 1)
+                           + up_down_interval:
+                           ini_anom + anom_interval * (2 * j)
+                           - up_down_interval])
+        anom_mse.append(mse[ini_anom + (2 * j) * anom_interval
+                            + up_down_interval:
+                            ini_anom + (2 * j + 1) * anom_interval
+                            - up_down_interval])
+        anom_up_mse.append(mse[ini_anom + anom_interval * (2 * j)
+                               - up_down_interval:
+                               ini_anom + (2 * j) * anom_interval
+                               + up_down_interval])
+        anom_down_mse.append(mse[ini_anom + (2 * j + 1) * anom_interval
+                                 - up_down_interval:
+                                 ini_anom + (2 * j + 1) * anom_interval
+                                 + up_down_interval])
+
     nom_mse = [l.tolist() for l in nom_mse]
     nom_mse = reduce(operator.add, nom_mse)
     nom_error_df = pd.DataFrame({'nom_error ': nom_mse})
     nom_error_df_pd = nom_error_df_pd.append(nom_error_df)
-    # nom_mse_list.append(nom_mse)
-    # nom_error_df_list.append(nom_error_df)
 
     anom_mse = [l.tolist() for l in anom_mse]
     anom_mse = reduce(operator.add, anom_mse)
     anom_error_df = pd.DataFrame({'anom_error ': anom_mse})
     anom_error_df_pd = anom_error_df_pd.append(anom_error_df)
-    # anom_mse_list.append(anom_mse)
-    # anom_error_df_list.append(anom_error_df)
 
     anom_up_mse = [l.tolist() for l in anom_up_mse]
     anom_up_mse = reduce(operator.add, anom_up_mse)
     anom_up_error_df = pd.DataFrame({'anom_up_error ': anom_up_mse})
     anom_up_error_df_pd = anom_up_error_df_pd.append(anom_up_error_df)
-    # anom_up_mse_list.append(anom_up_mse)
-    # anom_up_error_df_list.append(anom_up_error_df)
 
     anom_down_mse = [l.tolist() for l in anom_down_mse]
     anom_down_mse = reduce(operator.add, anom_down_mse)
     anom_down_error_df = pd.DataFrame({'anom_down_error ': anom_down_mse})
     anom_down_error_df_pd = anom_down_error_df_pd.append(anom_down_error_df)
-    # anom_down_mse_list.append(anom_down_mse)
-    # anom_down_error_df_list.append(anom_down_error_df)
 
 # Save MSE DataFrame
-# with open(nom_error_df_list_filename, 'wb') as f:
-#     pickle.dump(nom_error_df_list, f)
-#
-# with open(anom_error_df_list_filename, 'wb') as f:
-#     pickle.dump(anom_error_df_list, f)
-#
-# with open(anom_up_error_df_list_filename, 'wb') as f:
-#     pickle.dump(anom_up_error_df_list, f)
-#
-# with open(anom_down_error_df_list_filename, 'wb') as f:
-#     pickle.dump(anom_down_error_df_list, f)
+with open(full_anom_error_df_list_filename, 'wb') as f:
+    joblib.dump(full_anom_error_df_list, f)
+
+with open(nom_error_df_filename, 'wb') as f:
+    joblib.dump(nom_error_df_pd, f)
+
+with open(anom_error_df_filename, 'wb') as f:
+    joblib.dump(anom_error_df_pd, f)
+
+with open(anom_up_error_df_filename, 'wb') as f:
+    joblib.dump(anom_up_error_df_pd, f)
+
+with open(anom_down_error_df_filename, 'wb') as f:
+    joblib.dump(anom_down_error_df_pd, f)
 
 
 # Comment out the following section if you do not need visualization
@@ -273,7 +317,6 @@ sns.set_style('white')
 plt.figure(figsize=(23, 6))
 ax = sns.kdeplot(valid_error_df['valid_error'], cumulative=True, shade=False,
                  color='r')
-#color_list = list(matplotlib.colors.cnames.items())
 
 ax = sns.kdeplot(nom_error_df_pd['nom_error '],
                  cumulative=True, shade=False, color='g')
@@ -293,37 +336,13 @@ ax.vlines(valid_error_df.quantile(0.8)[0], ymin=0, ymax=0.8, color='purple',
           linestyles='dotted')
 ax.vlines(valid_error_df.quantile(0.9)[0], ymin=0, ymax=0.9, color='blue',
           linestyles='dashdot')
-ax.set_title(figure_name)
-ax.set_xlim(left=0, right=4)
+ax.set_title(figure_CDF_name)
+ax.set_xlim(left=0, right=3)
 
 plt.legend(loc=4)
 plt.xlabel('Value of prediction error')
 plt.ylabel('Cumulative probability')
-ax.get_figure().savefig(figure_filename)
-
-
-##########################################################
-# 6. Print FP rate v.s. Detection rate
-##########################################################
-# Modify the following quantile to see different outcomes.
-#cut = valid_error_df.quantile(0.9)[0]
-#i = 0
-#print('False Positive Rate: 10%')
-
-# Write relevant information
-#f = open(model_info_filename, 'w')
-#f.write('Model Info filename: {}\n'.format(model_info_filename))
-#f.write('Model size: {}\n'.format(model_size))
-#f.write('Validation time: {}'.format(validation_time))
-#for df in anom_error_df_list:
-#    y = [1 if e > cut else 0 for e in df['anom_error ' + str(i)].values]
-#    detect_rate = sum(y) / len(y)
-#    detect_str = 'Detection rate for anom_error_{} (FP rate = 0.1): {}\n'\
-#                 .format(i, detect_rate)
-#    print(detect_str)
-#    f.write(detect_str)
-#    i += 1
-#f.close()
+ax.get_figure().savefig(figure_CDF_filename)
 
 tf.keras.backend.clear_session()
 print('Evaluation finished!')
