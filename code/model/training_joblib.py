@@ -31,8 +31,6 @@ batch_size = int(sys.argv[7])
 epochs = int(sys.argv[8])
 gpu_no = str(sys.argv[9])
 
-# Set gpu environment
-os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
 
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
@@ -124,6 +122,8 @@ print('Start compiling model...')
 tf.keras.backend.clear_session()
 tf.random.set_seed(42)
 np.random.seed(42)
+# Set gpu environment
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
 
 model = tf.keras.models.\
     Sequential([tf.keras.layers.LSTM(64, return_sequences=True,
