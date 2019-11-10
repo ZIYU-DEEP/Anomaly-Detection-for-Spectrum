@@ -13,6 +13,7 @@ import glob
 import pickle
 import sys
 import matplotlib
+import joblib
 from functools import reduce
 import operator
 import tensorflow as tf
@@ -133,10 +134,11 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
+    break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
-    full_x_valid = pickle.load(f)
+    full_x_valid = joblib.load(f)
 
 
 # Comment out the next section if you do not need validation data
