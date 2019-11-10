@@ -34,7 +34,7 @@ batch_size = int(sys.argv[7])
 gpu_no = int(sys.argv[8])
 
 # Set gpu environment
-os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
+os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_no)
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_visible_devices(physical_devices[gpu_no - 1], 'GPU')
 logical_devices = tf.config.experimental.list_logical_devices('GPU')
