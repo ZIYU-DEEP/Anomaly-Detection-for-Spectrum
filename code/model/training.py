@@ -32,7 +32,7 @@ gpu_no = int(sys.argv[9])
 # Set gpu environment
 # os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_no)
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_visible_devices(physical_devices[gpu_no - 1], 'GPU')
+tf.config.experimental.set_visible_devices(physical_devices[gpu_no], 'GPU')
 logical_devices = tf.config.experimental.list_logical_devices('GPU')
 
 # String variables
