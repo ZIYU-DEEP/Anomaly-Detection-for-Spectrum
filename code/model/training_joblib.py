@@ -68,16 +68,12 @@ if not os.path.exists(model_path):
 ##########################################################
 normal_series_list = []
 
-i = 0
 print('Start constructing normal series....')
 for filename in sorted(glob.glob(normal_output_path + '*.txt')):
-    i += 1
     print(filename)
     series = utils.txt_to_series(filename)
     print(series.shape)
     normal_series_list.append(series)
-    if i > 0:
-        break
 
 
 ##########################################################
@@ -98,19 +94,19 @@ full_valid_set = utils.windowed_dataset(temp_x_valid, window_size, batch_size,
                                         predict_size, shift_eval)
 
 # Create full train set and full valid set
-# for series in normal_series_list[1:]:
-#     split_time = int(series.shape[0] * 0.8)
-#     x_train = series[:split_time]
-#     x_valid = series[split_time:]
-#     full_x_valid = np.concatenate((full_x_valid, x_valid))
-#
-#     train_set = utils.windowed_dataset(x_train, window_size, batch_size,
-#                                        predict_size, shift_train)
-#     valid_set = utils.windowed_dataset(x_valid, window_size, batch_size,
-#                                        predict_size, shift_eval)
-#
-#     full_train_set = full_train_set.concatenate(train_set)
-#     full_valid_set = full_valid_set.concatenate(valid_set)
+for series in normal_series_list[1:]:
+    split_time = int(series.shape[0] * 0.8)
+    x_train = series[:split_time]
+    x_valid = series[split_time:]
+    full_x_valid = np.concatenate((full_x_valid, x_valid))
+
+    train_set = utils.windowed_dataset(x_train, window_size, batch_size,
+                                       predict_size, shift_train)
+    valid_set = utils.windowed_dataset(x_valid, window_size, batch_size,
+                                       predict_size, shift_eval)
+
+    full_train_set = full_train_set.concatenate(train_set)
+    full_valid_set = full_valid_set.concatenate(valid_set)
 
 
 # Save full_x_valid for future threshold use
