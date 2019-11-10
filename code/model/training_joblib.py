@@ -36,7 +36,7 @@ print('Using GPU:', gpu_no)
 downsample_str = 'downsample_' + str(downsample_ratio)
 window_predict_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
 # Set gpu environment
-os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_no)
+# os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_no)
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_visible_devices(physical_devices[gpu_no - 1], 'GPU')
 logical_devices = tf.config.experimental.list_logical_devices('GPU')
