@@ -134,7 +134,6 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
-    break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -197,11 +196,15 @@ anom_down_error_df_pd = pd.DataFrame()
 # anom_down_error_df_list = []
 
 for i in range(len(anom_hat_list)):
+    nom_mse = []
+    anom_mse = []
+    anom_up_mse = []
+    anom_down_mse = []
     anom_hat = anom_hat_list[i]
     anom_true = anom_true_list[i]
     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
     nom_mse = [mse[0: ini_anom - up_down_interval]]
-
+#    print(nom_mse)
     for i in range(int(all_samp /(2 * samp_sec))):
         nom_mse.append(mse[ini_anom + anom_interval * (2*i -1) + up_down_interval:
                            ini_anom + anom_interval * (2*i) - up_down_interval])
@@ -212,24 +215,29 @@ for i in range(len(anom_hat_list)):
         anom_down_mse.append(mse[ini_anom + (2*i + 1) * anom_interval - up_down_interval :
                                  ini_anom + (2*i + 1) * anom_interval + up_down_interval])
 
+#    print(nom_mse)
+    nom_mse = [l.tolist() for l in nom_mse]
     nom_mse = reduce(operator.add, nom_mse)
     nom_error_df = pd.DataFrame({'nom_error ': nom_mse})
     nom_error_df_pd = nom_error_df_pd.append(nom_error_df)
     # nom_mse_list.append(nom_mse)
     # nom_error_df_list.append(nom_error_df)
 
+    anom_mse = [l.tolist() for l in anom_mse]
     anom_mse = reduce(operator.add, anom_mse)
     anom_error_df = pd.DataFrame({'anom_error ': anom_mse})
     anom_error_df_pd = anom_error_df_pd.append(anom_error_df)
     # anom_mse_list.append(anom_mse)
     # anom_error_df_list.append(anom_error_df)
 
+    anom_up_mse = [l.tolist() for l in anom_up_mse]
     anom_up_mse = reduce(operator.add, anom_up_mse)
     anom_up_error_df = pd.DataFrame({'anom_up_error ': anom_up_mse})
     anom_up_error_df_pd = anom_up_error_df_pd.append(anom_up_error_df)
     # anom_up_mse_list.append(anom_up_mse)
     # anom_up_error_df_list.append(anom_up_error_df)
 
+    anom_down_mse = [l.tolist() for l in anom_down_mse]
     anom_down_mse = reduce(operator.add, anom_down_mse)
     anom_down_error_df = pd.DataFrame({'anom_down_error ': anom_down_mse})
     anom_down_error_df_pd = anom_down_error_df_pd.append(anom_down_error_df)
@@ -265,16 +273,16 @@ sns.set_style('white')
 plt.figure(figsize=(23, 6))
 ax = sns.kdeplot(valid_error_df['valid_error'], cumulative=True, shade=False,
                  color='r')
-color_list = list(matplotlib.colors.cnames.items())
+#color_list = list(matplotlib.colors.cnames.items())
 
 ax = sns.kdeplot(nom_error_df_pd['nom_error '],
-                 cumulative=True, shade=False, color=color_list[0][0])
+                 cumulative=True, shade=False, color='g')
 ax = sns.kdeplot(anom_error_df_pd['anom_error '],
-                 cumulative=True, shade=False, color=color_list[1][0])
+                 cumulative=True, shade=False, color='b')
 ax = sns.kdeplot(anom_up_error_df_pd['anom_up_error '],
-                 cumulative=True, shade=False, color=color_list[2][0])
+                 cumulative=True, shade=False, color='y')
 ax = sns.kdeplot(anom_down_error_df_pd['anom_down_error '],
-                 cumulative=True, shade=False, color=color_list[3][0])
+                 cumulative=True, shade=False, color='k')
 
 sns.despine()
 ax.hlines(0.9, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100,
@@ -298,24 +306,24 @@ ax.get_figure().savefig(figure_filename)
 # 6. Print FP rate v.s. Detection rate
 ##########################################################
 # Modify the following quantile to see different outcomes.
-cut = valid_error_df.quantile(0.9)[0]
-i = 0
-print('False Positive Rate: 10%')
+#cut = valid_error_df.quantile(0.9)[0]
+#i = 0
+#print('False Positive Rate: 10%')
 
 # Write relevant information
-f = open(model_info_filename, 'w')
-f.write('Model Info filename: {}\n'.format(model_info_filename))
-f.write('Model size: {}\n'.format(model_size))
-f.write('Validation time: {}'.format(validation_time))
-for df in anom_error_df_list:
-    y = [1 if e > cut else 0 for e in df['anom_error ' + str(i)].values]
-    detect_rate = sum(y) / len(y)
-    detect_str = 'Detection rate for anom_error_{} (FP rate = 0.1): {}\n'\
-                 .format(i, detect_rate)
-    print(detect_str)
-    f.write(detect_str)
-    i += 1
-f.close()
+#f = open(model_info_filename, 'w')
+#f.write('Model Info filename: {}\n'.format(model_info_filename))
+#f.write('Model size: {}\n'.format(model_size))
+#f.write('Validation time: {}'.format(validation_time))
+#for df in anom_error_df_list:
+#    y = [1 if e > cut else 0 for e in df['anom_error ' + str(i)].values]
+#    detect_rate = sum(y) / len(y)
+#    detect_str = 'Detection rate for anom_error_{} (FP rate = 0.1): {}\n'\
+#                 .format(i, detect_rate)
+#    print(detect_str)
+#    f.write(detect_str)
+#    i += 1
+#f.close()
 
 tf.keras.backend.clear_session()
 print('Evaluation finished!')
