@@ -32,10 +32,13 @@ normal_folder = str(sys.argv[4])  # e.g. ryerson
 anomaly_folder = str(sys.argv[5])  # e.g. 0208_anomaly
 shift_eval = int(sys.argv[6])
 batch_size = int(sys.argv[7])
-gpu_no = str(sys.argv[8])
+gpu_no = int(sys.argv[8])
 
 # Set gpu environment
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_visible_devices(physical_devices[gpu_no - 1], 'GPU')
+logical_devices = tf.config.experimental.list_logical_devices('GPU')
 
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
