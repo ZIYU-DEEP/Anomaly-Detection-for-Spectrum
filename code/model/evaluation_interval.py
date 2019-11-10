@@ -200,7 +200,7 @@ for i in range(len(anom_hat_list)):
     anom_hat = anom_hat_list[i]
     anom_true = anom_true_list[i]
     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
-    nom_mse = mse[0: ini_anom - up_down_interval]
+    nom_mse = [mse[0: ini_anom - up_down_interval]]
 
     for i in range(int(all_samp /(2 * samp_sec))):
         nom_mse.append(mse[ini_anom + anom_interval * (2*i -1) + up_down_interval:
