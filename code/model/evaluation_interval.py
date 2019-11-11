@@ -47,7 +47,7 @@ trash_count = 102400  # begining samples being throwed
 ini_anom = int((((inter_samp - trash_count) / 256) - window_size)
                // shift_eval)
 anom_interval = int(((inter_samp / 256) - window_size) // shift_eval)
-up_down_interval = int(window_size // shift_eval)
+up_down_interval = 10 #int(window_size // shift_eval)
 
 # Set gpu environment
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
@@ -228,22 +228,30 @@ for i in range(len(anom_hat_list)):
 
     # Get nom, anom, anom_up, anom_down
     nom_mse = [mse[0: (ini_anom - up_down_interval)]]
-    cycle = int(all_samp / (2 * samp_sec))
+    print('nom_mse:', 0, ini_anom - up_down_interval)
+    cycle = int(all_samp / (2 * samp_sec * interval))
+    an_interval = (np.shape(mse)[0] - ini_anom) // 7 + 1
 
-    for j in range(cycle):
+    for j in range(4):
         if j != 0:
-            nom_mse.append(mse[ini_anom + anom_interval * (2 * j - 1):
-                               ini_anom + anom_interval * (2 * j)
+            nom_mse.append(mse[ini_anom + an_interval * (2 * j - 1)
+                               + up_down_interval:
+                               ini_anom + an_interval * (2 * j)
                                - up_down_interval])
-        anom_mse.append(mse[ini_anom + (2 * j) * anom_interval:
-                            ini_anom + (2 * j + 1) * anom_interval
+            print('nom_mse:', ini_anom + an_interval * (2 * j - 1)+ up_down_interval, ini_anom + an_interval * (2 * j) - up_down_interval)
+        anom_mse.append(mse[ini_anom + (2 * j) * an_interval
+                            + up_down_interval:
+                            ini_anom + (2 * j + 1) * an_interval
                             - up_down_interval])
-        anom_up_mse.append(mse[ini_anom + anom_interval * (2 * j)
+        print('anom_mse:', ini_anom + an_interval * (2 * j) + up_down_interval, ini_anom + an_interval * (2*j+1) - up_down_interval)
+        anom_up_mse.append(mse[ini_anom + an_interval * (2 * j)
                                - up_down_interval:
-                               ini_anom + (2 * j) * anom_interval])
-        anom_down_mse.append(mse[ini_anom + (2 * j + 1) * anom_interval
+                               ini_anom + (2 * j) * an_interval + up_down_interval])
+        print('anom_up_mse', ini_anom + an_interval * (2 * j)- up_down_interval, ini_anom + (2 * j) * an_interval + up_down_interval)
+        anom_down_mse.append(mse[ini_anom + (2 * j + 1) * an_interval
                                  - up_down_interval:
-                                 ini_anom + (2 * j + 1) * anom_interval])
+                                 ini_anom + (2 * j + 1) * an_interval + up_down_interval])
+        print('anom_down_mse', ini_anom + an_interval * (2 * j+1)- up_down_interval, ini_anom + (2 * j +1) * an_interval + up_down_interval)
 
     nom_mse = [l.tolist() for l in nom_mse]
     nom_mse = reduce(operator.add, nom_mse)
@@ -269,22 +277,24 @@ for i in range(len(anom_hat_list)):
 
     anom_seq = [[5] * ini_anom]
     #anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
-    an_interval = (np.shape(mse)[0] - ini_anom) // 7
-    for i in range(cycle):
+    #an_interval = (np.shape(mse)[0] - ini_anom) // 7
+    for k in range(cycle):
         anom_seq.append([6] * an_interval)
-        if i != cycle - 1:
+        if k != cycle - 1:
             anom_seq.append([5] * an_interval)
     anom_seq = reduce(operator.add, anom_seq)
-    anom_seq = anom_seq[0:len(full_anom_error_df)]
-    #anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
-    #anom_seq = reduce(operator.add, anom_seq)
+    if len(anom_seq) > len(full_anom_error_df):
+        anom_seq = anom_seq[0:len(full_anom_error_df)]
+    else:
+        anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
+        anom_seq = reduce(operator.add, anom_seq)
     # Draw the i th time mse of full anom error
     print('Drawing the {} th full anom time mse plot!'.format(i))
     plt.figure(figsize=(23, 6))
     ax = sns.lineplot(x=full_anom_error_df.index,
                       y=anom_seq)
-    ax = sns.scatterplot(x=full_anom_error_df.index,
-                      y=full_anom_error_df.iloc[:, 0], hue="continent")
+    ax = sns.lineplot(x=full_anom_error_df.index,
+                      y=full_anom_error_df.iloc[:, 0], color = 'orange')
 
     plt.xlabel('Time')
     plt.ylabel('MSE')
