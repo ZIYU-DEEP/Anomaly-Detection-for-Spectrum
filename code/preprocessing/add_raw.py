@@ -11,6 +11,8 @@ all_time = 40  ## seconds
 step_sec = 10000000  ## step number per sec, i.e. sample rate
 power_level = 3  ## power dB
 in_path = '/net/adv_spectrum/data/raw/normal/ryerson2/'
+ry_in_path = '/net/adv_spectrum/data/raw/normal/ryerson2/'
+jcl_in_path = '/net/adv_spectrum/data/raw/normal/JCL/'
 
 
 def print_raw(file):
@@ -82,5 +84,14 @@ def add_diff_batch(path, real_BS, power_level):
 
 
 #add_same_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_same/', '1518560024_880M_5m.dat')
+#for i in range(10):
+#    add_diff_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_diff', '1518560024_880M_5m.dat', i*3 - 3)
 for i in range(10):
-    add_diff_batch('/net/adv_spectrum/data/raw/abnormal/ryerson2_diff', '1518560024_880M_5m.dat', i*3 - 3)
+    G_path = '/net/adv_spectrum/data/raw/abnormal/ry2_jcl_mix' + '_G' + str(i*3 -3) + '/'
+    if not os.path.exists(G_path):
+        os.mkdir(G_path)
+        print(G_path + ' Created')
+    real_BS = ry_in_path + '1518560024_880M_5m.dat'
+    fake_BS = jcl_in_path + '1572728951_880M_5m.dat'
+    file_out = real_BS.split('/')[-1].split('_')[0] + '_' + fake_BS.split('/')[-1]
+    add_diff_raw(real_BS, fake_BS, G_path + file_out, 5, i*3 - 3)
