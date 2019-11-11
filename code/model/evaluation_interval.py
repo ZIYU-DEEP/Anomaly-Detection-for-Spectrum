@@ -143,6 +143,7 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
+    break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -156,7 +157,7 @@ print('Start constructing mse DataFrame...')
 # Get valid_hat and evaluate time
 start = timer()
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
-                                 predict_size, shift_eval).reshape(-1, 128)
+                                 predict_size, shift_eval).reshape(-1, shift_eval, 128)
 end = timer()
 validation_time = (start - end) / (len(full_x_valid) // shift_eval)
 print('Validation spends {} seconds! Hmm...'.format(validation_time))
@@ -179,7 +180,7 @@ valid_error_df.to_pickle(valid_error_df_filename)
 ##########################################################
 # Construct MSE DataFrame
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
-                                      predict_size, shift_eval).reshape(-1, 128)
+                                      predict_size, shift_eval).reshape(-1, shift_eval, 128)
                  for i in abnormal_series_list]
 
 if shift_eval == predict_size + window_size:
@@ -271,12 +272,13 @@ for i in range(len(anom_hat_list)):
 
     print(np.shape(nom_mse), np.shape(anom_mse), np.shape(anom_up_mse), np.shape(anom_down_mse))
 
-    anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
-    an_interval = int((inter_samp) / 256)
+    anom_seq = [[5] * ini_anom]
+    #anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
+    #an_interval = int((inter_samp) / 256)
     for i in range(cycle):
-        anom_seq.append([6] * an_interval)
+        anom_seq.append([6] * anom_interval)
         if i != cycle - 1:
-            anom_seq.append([5] * an_interval)
+            anom_seq.append([5] * anom_interval)
     anom_seq = reduce(operator.add, anom_seq)
     anom_seq = anom_seq[0:len(full_anom_error_df)]
     #anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
