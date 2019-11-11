@@ -4,6 +4,7 @@ Prescription: Evaluate the model's anomaly detection performance on different
               anomaly inputs.
 """
 import warnings
+
 warnings.filterwarnings('ignore')
 
 from timeit import default_timer as timer
@@ -21,7 +22,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-
 
 ##########################################################
 # 1. Initialization
@@ -60,63 +60,62 @@ window_predict_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
 path = '/net/adv_spectrum/data/'
 
 # Path to read featurized txt
-abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/'\
-                    .format(downsample_str,
-                            anomaly_folder,
-                            window_predict_size)
+abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/' \
+    .format(downsample_str,
+            anomaly_folder,
+            window_predict_size)
 
 # Path to save model and full_x_valid
 full_x_valid_path = '/net/adv_spectrum/result/x_valid/'
-full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl'\
-                        .format(downsample_str,
-                                normal_folder,
-                                window_predict_size)
-model_path = '/net/adv_spectrum/model/{}/{}/'\
-             .format(downsample_str, normal_folder)
-model_filename = model_path + '{}_{}.h5'\
-                 .format(downsample_ratio, window_predict_size)
-model_info_filename = model_path + '{}_{}_{}_info.txt'\
-                      .format(anomaly_folder,
-                              downsample_ratio,
-                              window_predict_size)
+full_x_valid_filename = full_x_valid_path + 'full_x_valid_{}_{}_{}.pkl' \
+    .format(downsample_str,
+            normal_folder,
+            window_predict_size)
+model_path = '/net/adv_spectrum/model/{}/{}/' \
+    .format(downsample_str, normal_folder)
+model_filename = model_path + '{}_{}.h5' \
+    .format(downsample_ratio, window_predict_size)
+model_info_filename = model_path + '{}_{}_{}_info.txt' \
+    .format(anomaly_folder,
+            downsample_ratio,
+            window_predict_size)
 model_size = os.path.getsize(model_filename)
 
 # Path to save valid error df and list of anomaly error df
 valid_error_df_path = '/net/adv_spectrum/result/error_df/valid/' \
                       '{}/{}/'.format(downsample_str, normal_folder)
-valid_error_df_filename = valid_error_df_path + 'valid_error_df_{}_{}.pkl'\
-                          .format(normal_folder, window_predict_size)
+valid_error_df_filename = valid_error_df_path + 'valid_error_df_{}_{}.pkl' \
+    .format(normal_folder, window_predict_size)
 
-error_df_path = '/net/adv_spectrum/result/error_df/anomaly/{}/{}/'\
-                .format(downsample_str, anomaly_folder)
+error_df_path = '/net/adv_spectrum/result/error_df/anomaly/{}/{}/' \
+    .format(downsample_str, anomaly_folder)
 full_anom_error_df_list_filename = error_df_path + \
-                                   'full_anom_error_df_list_{}_{}_{}.pkl'\
-                                   .format(normal_folder,
-                                           window_predict_size,
-                                           shift_eval)
+                                   'full_anom_error_df_list_{}_{}_{}.pkl' \
+                                       .format(normal_folder,
+                                               window_predict_size,
+                                               shift_eval)
 anom_error_df_filename = error_df_path + \
-                         'anom_error_df_{}_{}_{}.pkl'\
-                         .format(normal_folder,
-                                 window_predict_size,
-                                 shift_eval)
+                         'anom_error_df_{}_{}_{}.pkl' \
+                             .format(normal_folder,
+                                     window_predict_size,
+                                     shift_eval)
 nom_error_df_filename = anom_error_df_filename.replace('anom_', 'nom_')
 anom_up_error_df_filename = anom_error_df_filename.replace('anom_', 'anom_up_')
 anom_down_error_df_filename = anom_up_error_df_filename.replace('up', 'down')
 
-
 # Path of figure
 figure_CDF_name = '[Anomaly v.s. Valid] CDF Plot for Prediction Error ' \
-              '(norm = {}, anom = {}, ds_ratio={}, w_p_size={})'\
-              .format(normal_folder, anomaly_folder,
-                      downsample_ratio, window_predict_size)
+                  '(norm = {}, anom = {}, ds_ratio={}, w_p_size={})' \
+    .format(normal_folder, anomaly_folder,
+            downsample_ratio, window_predict_size)
 figure_CDF_path = '/net/adv_spectrum/result/plot/CDF/'
 figure_time_path = '/net/adv_spectrum/result/plot/time_mse/'
-figure_CDF_filename = figure_CDF_path + 'CDF_plot_{}_{}_{}_{}_{}.png'\
-                      .format(normal_folder,
-                              anomaly_folder,
-                              downsample_ratio,
-                              window_predict_size,
-                              shift_eval)
+figure_CDF_filename = figure_CDF_path + 'CDF_plot_{}_{}_{}_{}_{}.png' \
+    .format(normal_folder,
+            anomaly_folder,
+            downsample_ratio,
+            window_predict_size,
+            shift_eval)
 
 # Check path existence
 if not os.path.exists(full_x_valid_path):
@@ -129,7 +128,6 @@ if not os.path.exists(figure_CDF_path):
     os.makedirs(figure_CDF_path)
 if not os.path.exists(figure_time_path):
     os.makedirs(figure_time_path)
-
 
 ##########################################################
 # 2. Load Model and Data
@@ -149,7 +147,6 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
     full_x_valid = joblib.load(f)
-
 
 # Comment out the next section if you do not need validation data
 ##########################################################
@@ -177,7 +174,6 @@ valid_error_df = pd.DataFrame({'valid_error': valid_mse})
 # Save MSE DataFrame
 valid_error_df.to_pickle(valid_error_df_filename)
 
-
 ##########################################################
 # 4. Construct MSE DataFrame for Full Anom Data
 ##########################################################
@@ -192,7 +188,6 @@ if shift_eval == predict_size + window_size:
 else:
     anom_true_list = [i[window_size:, :].reshape((-1, 128))
                       for i in abnormal_series_list]
-
 
 ##########################################################
 # 5. Construct Normal and Abnormal MSE from combined data
@@ -230,30 +225,16 @@ for i in range(len(anom_hat_list)):
     full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
     full_anom_error_df_list.append(full_anom_error_df)
 
-    # Draw the i th time mse of full anom error
-    print('Drawing the {} th full anom time mse plot!'.format(i))
-    plt.figure(figsize=(23, 6))
-    ax = sns.lineplot(x=full_anom_error_df.index,
-                      y=full_anom_error_df.iloc[:, 0])
-
-    plt.xlabel('Time')
-    plt.ylabel('MSE')
-    sns.despine()
-    figure_time_name = 'time_mse_{}_{}_{}_{}_{}_{}.png'\
-                       .format(normal_folder, anomaly_folder, i,
-                               downsample_ratio, window_predict_size,
-                               shift_eval)
-    figure_time_filename = figure_time_path + figure_time_name
-    ax.get_figure().savefig(figure_time_filename)
-
     # Get nom, anom, anom_up, anom_down
     nom_mse = [mse[0: (ini_anom - up_down_interval)]]
+    cycle = int(all_samp / (2 * samp_sec))
 
-    for j in range(int(all_samp / (2 * samp_sec))):
-        nom_mse.append(mse[ini_anom + anom_interval * (2 * j - 1)
-                           + up_down_interval:
-                           ini_anom + anom_interval * (2 * j)
-                           - up_down_interval])
+    for j in range(cycle):
+        if j != 0:
+            nom_mse.append(mse[ini_anom + anom_interval * (2 * j - 1)
+                               + up_down_interval:
+                               ini_anom + anom_interval * (2 * j)
+                               - up_down_interval])
         anom_mse.append(mse[ini_anom + (2 * j) * anom_interval
                             + up_down_interval:
                             ini_anom + (2 * j + 1) * anom_interval
@@ -287,6 +268,31 @@ for i in range(len(anom_hat_list)):
     anom_down_error_df = pd.DataFrame({'anom_down_error ': anom_down_mse})
     anom_down_error_df_pd = anom_down_error_df_pd.append(anom_down_error_df)
 
+    anom_seq = [[5] * ini_anom]
+    for i in range(cycle):
+        anom_seq.append([6] * anom_interval)
+        if i != cycle - 1:
+            anom_seq.append([5] * anom_interval)
+
+    anom_seq = reduce(operator.add, anom_seq)
+    # Draw the i th time mse of full anom error
+    print('Drawing the {} th full anom time mse plot!'.format(i))
+    plt.figure(figsize=(23, 6))
+    ax = sns.lineplot(x=full_anom_error_df.index,
+                      y=anom_seq)
+    ax = sns.lineplot(x=full_anom_error_df.index,
+                      y=full_anom_error_df.iloc[:, 0])
+
+    plt.xlabel('Time')
+    plt.ylabel('MSE')
+    sns.despine()
+    figure_time_name = 'time_mse_{}_{}_{}_{}_{}_{}.png' \
+        .format(normal_folder, anomaly_folder, i,
+                downsample_ratio, window_predict_size,
+                shift_eval)
+    figure_time_filename = figure_time_path + figure_time_name
+    ax.get_figure().savefig(figure_time_filename)
+
 # Save MSE DataFrame
 print('Saving the strange mse DataFrames!')
 with open(full_anom_error_df_list_filename, 'wb') as f:
@@ -303,7 +309,6 @@ with open(anom_up_error_df_filename, 'wb') as f:
 
 with open(anom_down_error_df_filename, 'wb') as f:
     joblib.dump(anom_down_error_df_pd, f)
-
 
 # Comment out the following section if you do not need visualization
 ##########################################################
