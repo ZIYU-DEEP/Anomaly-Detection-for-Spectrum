@@ -165,10 +165,10 @@ print('Validation spends {} seconds! Hmm...'.format(validation_time))
 if shift_eval == predict_size + window_size:
     valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size)
 else:
-    valid_true = full_x_valid[window_size:, :].reshape((-1, 128))
+    valid_true = full_x_valid[window_size:, :].reshape((-1, shift_eval, 128))
 
 # Create mse DataFrame
-valid_mse = np.mean(np.power(valid_hat - valid_true, 2), axis=1)
+valid_mse = np.mean(np.power(valid_hat - valid_true, 2), axis=(1, 2))
 valid_error_df = pd.DataFrame({'valid_error': valid_mse})
 
 # Save MSE DataFrame
@@ -186,7 +186,7 @@ if shift_eval == predict_size + window_size:
     anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
                       for i in abnormal_series_list]
 else:
-    anom_true_list = [i[window_size:, :].reshape((-1, 128))
+    anom_true_list = [i[window_size:, :].reshape((-1, shift_eval, 128))
                       for i in abnormal_series_list]
 
 ##########################################################
@@ -218,9 +218,9 @@ for i in range(len(anom_hat_list)):
     anom_up_mse = []
     anom_down_mse = []
     anom_hat = anom_hat_list[i]
-    print(np.shape(anom_hat))
     anom_true = anom_true_list[i]
-    mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
+    mse = np.mean(np.power(anom_hat - anom_true, 2), axis=(1,2))
+    print(np.shape(mse))
 
     # Get full anom error
     full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
@@ -268,6 +268,7 @@ for i in range(len(anom_hat_list)):
     anom_down_mse = reduce(operator.add, anom_down_mse)
     anom_down_error_df = pd.DataFrame({'anom_down_error ': anom_down_mse})
     anom_down_error_df_pd = anom_down_error_df_pd.append(anom_down_error_df)
+
     print(np.shape(nom_mse), np.shape(anom_mse), np.shape(anom_up_mse), np.shape(anom_down_mse))
 
     anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
