@@ -235,6 +235,7 @@ for i in range(len(anom_hat_list)):
     plt.figure(figsize=(23, 6))
     ax = sns.lineplot(x=full_anom_error_df.index,
                       y=full_anom_error_df.iloc[:, 0])
+
     plt.xlabel('Time')
     plt.ylabel('MSE')
     sns.despine()
