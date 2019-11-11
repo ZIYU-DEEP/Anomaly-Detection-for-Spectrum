@@ -143,7 +143,6 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
-    break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -219,6 +218,7 @@ for i in range(len(anom_hat_list)):
     anom_up_mse = []
     anom_down_mse = []
     anom_hat = anom_hat_list[i]
+    print(np.shape(anom_hat))
     anom_true = anom_true_list[i]
     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=1)
 
@@ -268,15 +268,18 @@ for i in range(len(anom_hat_list)):
     anom_down_mse = reduce(operator.add, anom_down_mse)
     anom_down_error_df = pd.DataFrame({'anom_down_error ': anom_down_mse})
     anom_down_error_df_pd = anom_down_error_df_pd.append(anom_down_error_df)
+    print(np.shape(nom_mse), np.shape(anom_mse), np.shape(anom_up_mse), np.shape(anom_down_mse))
 
-    anom_seq = [[5] * ini_anom]
+    anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
+    an_interval = int((inter_samp) / 256)
     for i in range(cycle):
-        anom_seq.append([6] * anom_interval)
+        anom_seq.append([6] * an_interval)
         if i != cycle - 1:
-            anom_seq.append([5] * anom_interval)
+            anom_seq.append([5] * an_interval)
     anom_seq = reduce(operator.add, anom_seq)
-    anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
-    anom_seq = reduce(operator.add, anom_seq)
+    anom_seq = anom_seq[0:len(full_anom_error_df)]
+    #anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
+    #anom_seq = reduce(operator.add, anom_seq)
     # Draw the i th time mse of full anom error
     print('Drawing the {} th full anom time mse plot!'.format(i))
     plt.figure(figsize=(23, 6))
