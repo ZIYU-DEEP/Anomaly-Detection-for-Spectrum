@@ -274,11 +274,11 @@ for i in range(len(anom_hat_list)):
 
     anom_seq = [[5] * ini_anom]
     #anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
-    #an_interval = int((inter_samp) / 256)
+    an_interval = (np.shape(mse)[0] - ini_anom) // 7
     for i in range(cycle):
-        anom_seq.append([6] * anom_interval)
+        anom_seq.append([6] * an_interval)
         if i != cycle - 1:
-            anom_seq.append([5] * anom_interval)
+            anom_seq.append([5] * an_interval)
     anom_seq = reduce(operator.add, anom_seq)
     anom_seq = anom_seq[0:len(full_anom_error_df)]
     #anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
@@ -288,8 +288,8 @@ for i in range(len(anom_hat_list)):
     plt.figure(figsize=(23, 6))
     ax = sns.lineplot(x=full_anom_error_df.index,
                       y=anom_seq)
-    ax = sns.lineplot(x=full_anom_error_df.index,
-                      y=full_anom_error_df.iloc[:, 0])
+    ax = sns.scatterplot(x=full_anom_error_df.index,
+                      y=full_anom_error_df.iloc[:, 0], hue="continent")
 
     plt.xlabel('Time')
     plt.ylabel('MSE')
@@ -359,6 +359,7 @@ plt.legend(loc=4)
 plt.xlabel('Value of prediction error')
 plt.ylabel('Cumulative probability')
 ax.get_figure().savefig(figure_CDF_filename)
+print(figure_CDF_filename)
 
 tf.keras.backend.clear_session()
 print('Evaluation finished!')
