@@ -143,6 +143,7 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
+    break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -273,7 +274,8 @@ for i in range(len(anom_hat_list)):
         anom_seq.append([6] * anom_interval)
         if i != cycle - 1:
             anom_seq.append([5] * anom_interval)
-
+    anom_seq = reduce(operator.add, anom_seq)
+    anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
     anom_seq = reduce(operator.add, anom_seq)
     # Draw the i th time mse of full anom error
     print('Drawing the {} th full anom time mse plot!'.format(i))
