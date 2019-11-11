@@ -94,4 +94,5 @@ for i in range(10):
     real_BS = ry_in_path + '1518560024_880M_5m.dat'
     fake_BS = jcl_in_path + '1572728951_880M_5m.dat'
     file_out = real_BS.split('/')[-1].split('_')[0] + '_' + fake_BS.split('/')[-1]
+    print('start adding ' + real_BS + ' and ' + fake_BS + ', on power level ' + str(i*3 -3))
     add_diff_raw(real_BS, fake_BS, G_path + file_out, 5, i*3 - 3)
