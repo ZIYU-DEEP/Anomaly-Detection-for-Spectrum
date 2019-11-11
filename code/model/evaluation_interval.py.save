@@ -47,7 +47,7 @@ trash_count = 102400  # begining samples being throwed
 ini_anom = int((((inter_samp - trash_count) / 256) - window_size)
                // shift_eval)
 anom_interval = int(((inter_samp / 256) - window_size) // shift_eval)
-up_down_interval = int(window_size // shift_eval)
+up_down_interval = int(window_size // shift_eval + 1)
 
 # Set gpu environment
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
@@ -143,6 +143,7 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
+    break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -232,18 +233,22 @@ for i in range(len(anom_hat_list)):
 
     for j in range(cycle):
         if j != 0:
-            nom_mse.append(mse[ini_anom + anom_interval * (2 * j - 1):
+            nom_mse.append(mse[ini_anom + anom_interval * (2 * j - 1)
+                               + up_down_interval:
                                ini_anom + anom_interval * (2 * j)
                                - up_down_interval])
-        anom_mse.append(mse[ini_anom + (2 * j) * anom_interval:
+        anom_mse.append(mse[ini_anom + (2 * j) * anom_interval
+                            + up_down_interval:
                             ini_anom + (2 * j + 1) * anom_interval
                             - up_down_interval])
         anom_up_mse.append(mse[ini_anom + anom_interval * (2 * j)
                                - up_down_interval:
-                               ini_anom + (2 * j) * anom_interval])
+                               ini_anom + (2 * j) * anom_interval
+                               + up_down_interval])
         anom_down_mse.append(mse[ini_anom + (2 * j + 1) * anom_interval
                                  - up_down_interval:
-                                 ini_anom + (2 * j + 1) * anom_interval])
+                                 ini_anom + (2 * j + 1) * anom_interval
+                                 + up_down_interval])
 
     nom_mse = [l.tolist() for l in nom_mse]
     nom_mse = reduce(operator.add, nom_mse)
