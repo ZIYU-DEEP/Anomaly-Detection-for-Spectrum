@@ -107,15 +107,16 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
 ##########################################################
 # 4. Construct MSE DataFrame for Full Anom Data
 ##########################################################
-# k = utils.model_forecast(model, abnormal_series_list[0], batch_size, window_size,
-#                                       predict_size, shift_eval)
-# print(k.shape)
+k = utils.model_forecast(model, abnormal_series_list[0], batch_size, window_size,
+                                      predict_size, shift_eval)
+print(k.shape)
 
 # Construct MSE DataFrame
 print('Start construct MSE DataFrames...')
-anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
-                                      predict_size, shift_eval)
-                 for i in abnormal_series_list]
+# anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
+#                                       predict_size, shift_eval)
+#                  for i in abnormal_series_list]
+anom_hat_list = [k]
 
 if shift_eval == predict_size + window_size:
     anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
