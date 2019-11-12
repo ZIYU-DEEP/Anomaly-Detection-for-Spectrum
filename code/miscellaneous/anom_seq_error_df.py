@@ -29,23 +29,23 @@ with open(file_error_df_1000, 'rb') as f:
 
 
 print('Drawing the anom time mse plot!')
-fig, (ax, ax1) = plt.subplots(2, 1, figsize=(23, 12), dpi=200)
+fig, axes = plt.subplots(2, 1, figsize=(23, 12), dpi=200)
 sns.lineplot(x=error_df_100.index,
-             y=anom_seq_100, ax=ax)
+             y=anom_seq_100, ax=axes[0])
 sns.lineplot(x=error_df_100.index,
-             y=error_df_100.iloc[:, 0], color='orange', ax=ax)
+             y=error_df_100.iloc[:, 0], color='orange', ax=axes[0])
 
-ax.set_ylim(top=7)
-ax.set_xlabel('Time')
-ax.set_ylabel('MSE')
+axes[0].set_ylim(top=7)
+axes[0].set_xlabel('Time')
+axes[0].set_ylabel('MSE')
 
 sns.lineplot(x=error_df_1000.index,
-             y=anom_seq_1000, ax=ax1)
+             y=anom_seq_1000, ax=axes[1])
 sns.lineplot(x=error_df_1000.index,
-             y=error_df_1000.iloc[:, 0], color='orange', ax=ax1)
+             y=error_df_1000.iloc[:, 0], color='orange', ax=axes[1])
 
-ax1.set_ylim(top=7)
-ax1.set_xlabel('Time')
-ax1.set_ylabel('MSE')
+axes[1].set_ylim(top=7)
+axes[1].set_xlabel('Time')
+axes[1].set_ylabel('MSE')
 sns.despine(fig=fig)
 fig.save_fig('/net/adv_spectrum/miscellaneous/contrast.png')
