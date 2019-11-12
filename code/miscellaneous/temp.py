@@ -114,8 +114,13 @@ if shift_eval == predict_size + window_size:
     anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
                       for i in abnormal_series_list]
 else:
-    anom_true_list = [i[window_size: - end_point, :].reshape((-1, shift_eval, 128))
-                      for i in abnormal_series_list]
+    if end_point != 0:
+        anom_true_list = [i[window_size: - end_point, :]
+                              .reshape((-1, shift_eval, 128))
+                          for i in abnormal_series_list]
+    else:
+        anom_true_list = [i[window_size:, :].reshape((-1, shift_eval, 128))
+                          for i in abnormal_series_list]
 
 ##########################################################
 # 5. Construct Normal and Abnormal MSE from combined data
