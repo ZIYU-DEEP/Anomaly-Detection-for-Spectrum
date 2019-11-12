@@ -31,7 +31,7 @@ downsample_ratio = int(sys.argv[1])  # e.g. 10
 window_size = int(sys.argv[2])  # e.g. 1000
 predict_size = int(sys.argv[3])  # e.g. 250
 normal_folder = str(sys.argv[4])  # e.g. ryerson_all
-anomaly_folder = str(sys.argv[5])  # e.g. jcl_mix_G6
+anomaly_folder = str(sys.argv[5])  # e.g. ry2_jcl_mix_G6
 shift_eval = int(sys.argv[6])  # e.g. 250
 batch_size = int(sys.argv[7])  # e.g. 128
 gpu_no = str(sys.argv[8])  # e.g. 3
@@ -101,6 +101,7 @@ print('Start retrieving abnormal series...')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
+    print(series.shape)
     abnormal_series_list.append(series)
 
 ##########################################################
