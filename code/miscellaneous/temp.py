@@ -67,6 +67,7 @@ abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/' \
     .format(downsample_str,
             anomaly_folder,
             norm_window_predict_size)
+print(abnormal_output_path)
 
 error_df_path = '/net/adv_spectrum/result/error_df/anomaly/{}/{}/model_{}/' \
     .format(downsample_str, anomaly_folder, window_predict_size)
