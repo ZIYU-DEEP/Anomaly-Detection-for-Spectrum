@@ -83,6 +83,9 @@ model_filename = model_path + '{}_{}.h5' \
 anom_seq_filename = '/net/adv_spectrum/result/anom_seq/anom_seq_{}.pkl'\
                     .format(window_predict_size)
 
+if not os.path.exists(error_df_path):
+    os.makedirs(error_df_path)
+
 
 ##########################################################
 # 2. Load Model and Data
@@ -93,7 +96,7 @@ model = tf.keras.models.load_model(model_filename)
 # stored in a format of list of arrays (shape = [n, 128]).
 abnormal_series_list = []
 
-print('Start retrieving abnormal series....')
+print('Start retrieving abnormal series...')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
@@ -103,6 +106,7 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
 # 4. Construct MSE DataFrame for Full Anom Data
 ##########################################################
 # Construct MSE DataFrame
+print('Start construct MSE DataFrames...')
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
                                       predict_size, shift_eval)
                                       .reshape(-1, shift_eval, 128)

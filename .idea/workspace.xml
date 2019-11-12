@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="524a1f09-7bf4-41f8-8b29-01207f094d08" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/code/miscellaneous/100_norm_1000_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/miscellaneous/anom_seq_error_df.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/miscellaneous/anom_seq_error_df.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/miscellaneous/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/miscellaneous/temp.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -42,14 +39,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="394" />
-          <entry key="dummy" value="8" />
-          <entry key="py" value="7793" />
+          <entry key="dummy" value="49" />
+          <entry key="py" value="7836" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="8" />
-          <entry key="Python" value="8187" />
+          <entry key="PLAIN_TEXT" value="49" />
+          <entry key="Python" value="8230" />
         </counts>
       </usages-collector>
     </session>
@@ -57,10 +54,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/miscellaneous/100_norm_1000_model.py">
+        <entry file="file://$PROJECT_DIR$/code/miscellaneous/save_df_and_seq.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="486">
-              <caret line="59" selection-start-line="59" selection-end-line="59" selection-end-column="70" />
+            <state relative-caret-position="532">
+              <caret line="113" selection-start-line="113" selection-end-line="114" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -68,8 +65,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/miscellaneous/temp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2678">
-              <caret line="158" column="17" selection-start-line="158" selection-start-column="17" selection-end-line="158" selection-end-column="17" />
+            <state relative-caret-position="566">
+              <caret line="91" column="44" selection-start-line="91" selection-start-column="44" selection-end-line="91" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -515,17 +512,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/miscellaneous/100_norm_1000_model.py">
+    <entry file="file://$PROJECT_DIR$/code/miscellaneous/save_df_and_seq.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="59" selection-start-line="59" selection-end-line="59" selection-end-column="70" />
+        <state relative-caret-position="532">
+          <caret line="113" selection-start-line="113" selection-end-line="114" selection-end-column="34" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/miscellaneous/temp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2678">
-          <caret line="158" column="17" selection-start-line="158" selection-start-column="17" selection-end-line="158" selection-end-column="17" />
+        <state relative-caret-position="566">
+          <caret line="91" column="44" selection-start-line="91" selection-start-column="44" selection-end-line="91" selection-end-column="44" />
         </state>
       </provider>
     </entry>
