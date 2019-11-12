@@ -107,66 +107,65 @@ for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
 ##########################################################
 # 4. Construct MSE DataFrame for Full Anom Data
 ##########################################################
-k = utils.model_forecast(model, abnormal_series_list[0], batch_size, window_size,
-                                      predict_size, shift_eval)
-print(k.shape)
-
-# # Construct MSE DataFrame
-# print('Start construct MSE DataFrames...')
-# anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
+# k = utils.model_forecast(model, abnormal_series_list[0], batch_size, window_size,
 #                                       predict_size, shift_eval)
-#                                       .reshape(-1, shift_eval, 128)
-#                  for i in abnormal_series_list]
-#
-# if shift_eval == predict_size + window_size:
-#     anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
-#                       for i in abnormal_series_list]
-# else:
-#     anom_true_list = [i[window_size:, :].reshape((-1, shift_eval, 128))
-#                       for i in abnormal_series_list]
-#
-# ##########################################################
-# # 5. Construct Normal and Abnormal MSE from combined data
-# ##########################################################
-# # MSE of full data
-# full_anom_error_df_list = []
-#
-# for i in range(len(anom_hat_list)):
-#     print('Processing the {} th anom hat list!'.format(i))
-#     anom_hat = anom_hat_list[i]
-#     anom_true = anom_true_list[i]
-#     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=(1,2))
-#     print(np.shape(mse))
-#
-#     # Get full anom error
-#     full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
-#     full_anom_error_df_list.append(full_anom_error_df)
-#
-#     # Get nom, anom, anom_up, anom_down
-#     cycle = int(all_samp / (2 * samp_sec * interval))
-#     an_interval = (np.shape(mse)[0] - ini_anom) // 7 + 1
-#
-#     anom_seq = [[5] * ini_anom]
-#     for k in range(cycle):
-#         anom_seq.append([6] * an_interval)
-#         if k != cycle - 1:
-#             anom_seq.append([5] * an_interval)
-#     anom_seq = reduce(operator.add, anom_seq)
-#     if len(anom_seq) > len(full_anom_error_df):
-#         anom_seq = anom_seq[0:len(full_anom_error_df)]
-#     else:
-#         anom_seq = [anom_seq, [6] * (len(full_anom_error_df) - len(anom_seq))]
-#         anom_seq = reduce(operator.add, anom_seq)
-#
-#     with open(anom_seq_filename, 'wb') as f:
-#         print(anom_seq_filename)
-#         joblib.dump(anom_seq, anom_seq_filename)
-#
-# with open(full_anom_error_df_list_filename, 'wb') as f:
-#     print(full_anom_error_df_list_filename)
-#     joblib.dump(full_anom_error_df_list, full_anom_error_df_list_filename)
-#
-# print('I am done.')
+# print(k.shape)
+
+# Construct MSE DataFrame
+print('Start construct MSE DataFrames...')
+anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
+                                      predict_size, shift_eval)
+                 for i in abnormal_series_list]
+
+if shift_eval == predict_size + window_size:
+    anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
+                      for i in abnormal_series_list]
+else:
+    anom_true_list = [i[window_size:, :].reshape((-1, shift_eval, 128))
+                      for i in abnormal_series_list]
+
+##########################################################
+# 5. Construct Normal and Abnormal MSE from combined data
+##########################################################
+# MSE of full data
+full_anom_error_df_list = []
+
+for i in range(len(anom_hat_list)):
+    print('Processing the {} th anom hat list!'.format(i))
+    anom_hat = anom_hat_list[i]
+    anom_true = anom_true_list[i]
+    mse = np.mean(np.power(anom_hat - anom_true, 2), axis=(1,2))
+    print(np.shape(mse))
+
+    # Get full anom error
+    full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
+    full_anom_error_df_list.append(full_anom_error_df)
+
+    # Get nom, anom, anom_up, anom_down
+    cycle = int(all_samp / (2 * samp_sec * interval))
+    an_interval = (np.shape(mse)[0] - ini_anom) // 7 + 1
+
+    anom_seq = [[5] * ini_anom]
+    for k in range(cycle):
+        anom_seq.append([6] * an_interval)
+        if k != cycle - 1:
+            anom_seq.append([5] * an_interval)
+    anom_seq = reduce(operator.add, anom_seq)
+    if len(anom_seq) > len(full_anom_error_df):
+        anom_seq = anom_seq[0:len(full_anom_error_df)]
+    else:
+        anom_seq = [anom_seq, [6] * (len(full_anom_error_df) - len(anom_seq))]
+        anom_seq = reduce(operator.add, anom_seq)
+
+    with open(anom_seq_filename, 'wb') as f:
+        print(anom_seq_filename)
+        joblib.dump(anom_seq, anom_seq_filename)
+
+with open(full_anom_error_df_list_filename, 'wb') as f:
+    print(full_anom_error_df_list_filename)
+    joblib.dump(full_anom_error_df_list, full_anom_error_df_list_filename)
+
+print('I am done.')
 
 
 
