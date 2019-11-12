@@ -97,32 +97,29 @@ model = tf.keras.models.load_model(model_filename)
 # stored in a format of list of arrays (shape = [n, 128]).
 abnormal_series_list = []
 
+end_point = 0
 print('Start retrieving abnormal series...')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     print(series.shape)
+    end_point = series.shape[0] % shift_eval
     abnormal_series_list.append(series)
 
 ##########################################################
 # 4. Construct MSE DataFrame for Full Anom Data
 ##########################################################
-k = utils.model_forecast(model, abnormal_series_list[0], batch_size, window_size,
-                                      predict_size, shift_eval)
-print(k.shape)
-
 # Construct MSE DataFrame
 print('Start construct MSE DataFrames...')
-# anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
-#                                       predict_size, shift_eval)
-#                  for i in abnormal_series_list]
-anom_hat_list = [k]
+anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
+                                      predict_size, shift_eval)
+                 for i in abnormal_series_list]
 
 if shift_eval == predict_size + window_size:
     anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
                       for i in abnormal_series_list]
 else:
-    anom_true_list = [i[window_size:, :].reshape((-1, shift_eval, 128))
+    anom_true_list = [i[window_size: - end_point, :].reshape((-1, shift_eval, 128))
                       for i in abnormal_series_list]
 
 ##########################################################
