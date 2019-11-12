@@ -4,24 +4,18 @@ Prescription: Evaluate the model's anomaly detection performance on different
               anomaly inputs.
 """
 import warnings
-
 warnings.filterwarnings('ignore')
 
-from timeit import default_timer as timer
 import utils
 import os
 import glob
-import pickle
 import sys
-import matplotlib
 import joblib
 from functools import reduce
 import operator
 import tensorflow as tf
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 ##########################################################
 # 1. Initialization
@@ -72,17 +66,18 @@ print(abnormal_output_path)
 error_df_path = '/net/adv_spectrum/result/error_df/anomaly/{}/{}/model_{}/' \
     .format(downsample_str, anomaly_folder, window_predict_size)
 full_anom_error_df_list_filename = error_df_path + \
-                                   'full_anom_error_df_list_{}_{}_{}.pkl' \
+                                   'full_anom_error_df_list_{}_{}_{}_{}.pkl' \
                                        .format(normal_folder,
                                                norm_window_predict_size,
+                                               window_predict_size,
                                                shift_eval)
 model_path = '/net/adv_spectrum/model/{}/{}/' \
     .format(downsample_str, normal_folder)
 model_filename = model_path + '{}_{}.h5' \
     .format(downsample_ratio, window_predict_size)
 
-anom_seq_filename = '/net/adv_spectrum/result/anom_seq/anom_seq_{}.pkl'\
-                    .format(window_predict_size)
+anom_seq_filename = '/net/adv_spectrum/result/anom_seq/anom_seq_{}_{}.pkl'\
+                    .format(norm_window_predict_size, window_predict_size)
 
 if not os.path.exists(error_df_path):
     os.makedirs(error_df_path)
