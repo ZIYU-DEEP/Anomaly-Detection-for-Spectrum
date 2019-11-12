@@ -22,10 +22,10 @@ with open(file_anom_seq_1000, 'rb') as f:
     anom_seq_1000 = pickle.load(f)
 
 with open(file_error_df_100, 'rb') as f:
-    error_df_100 = pickle.load(f)
+    error_df_100 = pickle.load(f)[0]
 
 with open(file_error_df_1000, 'rb') as f:
-    error_df_1000 = pickle.load(f)
+    error_df_1000 = pickle.load(f)[0]
 
 
 print('Drawing the anom time mse plot!')
