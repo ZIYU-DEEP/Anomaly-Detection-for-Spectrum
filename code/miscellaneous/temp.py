@@ -27,14 +27,16 @@ import matplotlib.pyplot as plt
 # 1. Initialization
 ##########################################################
 # Arguments
-downsample_ratio = int(sys.argv[1])
-window_size = int(sys.argv[2])
-predict_size = int(sys.argv[3])
-normal_folder = str(sys.argv[4])  # e.g. ryerson
-anomaly_folder = str(sys.argv[5])  # e.g. 0208_anomaly
-shift_eval = int(sys.argv[6])
-batch_size = int(sys.argv[7])
-gpu_no = str(sys.argv[8])
+downsample_ratio = int(sys.argv[1])  # e.g. 10
+window_size = int(sys.argv[2])  # e.g. 1000
+predict_size = int(sys.argv[3])  # e.g. 250
+normal_folder = str(sys.argv[4])  # e.g. ryerson_all
+anomaly_folder = str(sys.argv[5])  # e.g. jcl_mix_G6
+shift_eval = int(sys.argv[6])  # e.g. 250
+batch_size = int(sys.argv[7])  # e.g. 128
+gpu_no = str(sys.argv[8])  # e.g. 3
+norm_window = int(sys.argv[9])  # e.g. 100
+norm_predict = int(sys.argv[10])  # e.g. 25
 
 # Interval values
 all_samp = 200000000 * 2  # all samp per file
@@ -55,6 +57,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
 window_predict_size = str(sys.argv[2]) + '_' + str(sys.argv[3])
+norm_window_predict_size = str(sys.argv[9]) + '_' + str(sys.argv[10])
 
 # General path
 path = '/net/adv_spectrum/data/'
@@ -63,22 +66,23 @@ path = '/net/adv_spectrum/data/'
 abnormal_output_path = path + 'feature/{}/abnormal/{}/{}/' \
     .format(downsample_str,
             anomaly_folder,
-            window_predict_size)
+            norm_window_predict_size)
 
-error_df_path = '/net/adv_spectrum/result/error_df/anomaly/{}/{}/' \
-    .format(downsample_str, anomaly_folder)
+error_df_path = '/net/adv_spectrum/result/error_df/anomaly/{}/{}/model_{}/' \
+    .format(downsample_str, anomaly_folder, window_predict_size)
 full_anom_error_df_list_filename = error_df_path + \
                                    'full_anom_error_df_list_{}_{}_{}.pkl' \
                                        .format(normal_folder,
-                                               window_predict_size,
+                                               norm_window_predict_size,
                                                shift_eval)
 model_path = '/net/adv_spectrum/model/{}/{}/' \
     .format(downsample_str, normal_folder)
 model_filename = model_path + '{}_{}.h5' \
     .format(downsample_ratio, window_predict_size)
 
-anom_seq_filename = '/net/adv_spectrum/miscellaneous/anom_seq_{}.pkl'\
+anom_seq_filename = '/net/adv_spectrum/result/anom_seq/anom_seq_{}.pkl'\
                     .format(window_predict_size)
+
 
 ##########################################################
 # 2. Load Model and Data
@@ -145,9 +149,14 @@ for i in range(len(anom_hat_list)):
         anom_seq = reduce(operator.add, anom_seq)
 
     with open(anom_seq_filename, 'wb') as f:
+        print(anom_seq_filename)
         joblib.dump(anom_seq, anom_seq_filename)
 
-    print('Done!')
+with open(full_anom_error_df_list_filename, 'wb') as f:
+    print(full_anom_error_df_list_filename)
+    joblib.dump(full_anom_error_df_list, full_anom_error_df_list_filename)
+
+print('I am done.')
 
 
 
