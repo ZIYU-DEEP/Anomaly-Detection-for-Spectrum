@@ -310,8 +310,8 @@ plt.ylim(top=7)
 plt.xlabel('Time')
 plt.ylabel('MSE')
 sns.despine()
-figure_time_name = 'time_mse_{}_{}_{}_{}_{}_{}.png' \
-    .format(normal_folder, anomaly_folder, i,
+figure_time_name = 'time_mse_{}_{}_{}_{}_{}.png' \
+    .format(normal_folder, anomaly_folder,
             downsample_ratio, window_predict_size,
             shift_eval)
 figure_time_filename = figure_time_path + figure_time_name
