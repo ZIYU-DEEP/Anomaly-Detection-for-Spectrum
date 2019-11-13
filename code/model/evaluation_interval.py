@@ -296,17 +296,16 @@ for i in range(len(anom_hat_list)):
     anom_seq_list.append(anom_seq)
     mse_list.append(mse)
     # Draw the i th time mse of full anom error
-    # print('Drawing the {} th full anom time mse plot!'.format(i))
+print('Drawing the full anom time mse plot!')
 anom_seq_list = reduce(operator.add, anom_seq_list)
 mse_list = reduce(operator.add, mse_list)
 plt.figure(figsize=(23, 6))
 ax = sns.lineplot(x=len(anom_seq_list),
                   y=anom_seq_list)
-ax = sns.scatterplotplot(x=len(anom_seq_list),
+ax = sns.scatterplot(x=len(anom_seq_list),
                   y=mse_list, color='orange')
 
-
-plt.ylim(top=7)
+plt.ylim(top=3)
 plt.xlabel('Time')
 plt.ylabel('MSE')
 sns.despine()
