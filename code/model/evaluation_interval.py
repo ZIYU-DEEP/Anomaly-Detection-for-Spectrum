@@ -212,6 +212,9 @@ anom_down_error_df_pd = pd.DataFrame()
 # MSE of full data
 full_anom_error_df_list = []
 
+anom_seq_list = []
+mse_list = []
+
 for i in range(len(anom_hat_list)):
     print('Processing the {} th anom hat list!'.format(i))
     nom_mse = []
@@ -276,37 +279,43 @@ for i in range(len(anom_hat_list)):
 
     print(np.shape(nom_mse), np.shape(anom_mse), np.shape(anom_up_mse), np.shape(anom_down_mse))
 
-    anom_seq = [[5] * ini_anom]
+    anom_seq = [[2] * ini_anom]
     #anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
     #an_interval = (np.shape(mse)[0] - ini_anom) // 7
     for k in range(cycle):
-        anom_seq.append([6] * an_interval)
+        anom_seq.append([2.5] * an_interval)
         if k != cycle - 1:
-            anom_seq.append([5] * an_interval)
+            anom_seq.append([2] * an_interval)
     anom_seq = reduce(operator.add, anom_seq)
     if len(anom_seq) > len(full_anom_error_df):
         anom_seq = anom_seq[0:len(full_anom_error_df)]
     else:
-        anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
+        anom_seq = [anom_seq, [2.5]* (len(full_anom_error_df) - len(anom_seq))]
         anom_seq = reduce(operator.add, anom_seq)
-    # Draw the i th time mse of full anom error
-    print('Drawing the {} th full anom time mse plot!'.format(i))
-    plt.figure(figsize=(23, 6))
-    ax = sns.lineplot(x=full_anom_error_df.index,
-                      y=anom_seq)
-    ax = sns.lineplot(x=full_anom_error_df.index,
-                      y=full_anom_error_df.iloc[:, 0], color='orange')
 
-    plt.ylim(top=7)
-    plt.xlabel('Time')
-    plt.ylabel('MSE')
-    sns.despine()
-    figure_time_name = 'time_mse_{}_{}_{}_{}_{}_{}.png' \
-        .format(normal_folder, anomaly_folder, i,
-                downsample_ratio, window_predict_size,
-                shift_eval)
-    figure_time_filename = figure_time_path + figure_time_name
-    ax.get_figure().savefig(figure_time_filename)
+    anom_seq_list.append(anom_seq)
+    mse_list.append(mse)
+    # Draw the i th time mse of full anom error
+    # print('Drawing the {} th full anom time mse plot!'.format(i))
+anom_seq_list = reduce(operator.add, anom_seq_list)
+mse_list = reduce(operator.add, mse_list)
+plt.figure(figsize=(23, 6))
+ax = sns.lineplot(x=len(anom_seq_list),
+                  y=anom_seq_list)
+ax = sns.scatterplotplot(x=len(anom_seq_list),
+                  y=mse_list, color='orange')
+
+
+plt.ylim(top=7)
+plt.xlabel('Time')
+plt.ylabel('MSE')
+sns.despine()
+figure_time_name = 'time_mse_{}_{}_{}_{}_{}_{}.png' \
+    .format(normal_folder, anomaly_folder, i,
+            downsample_ratio, window_predict_size,
+            shift_eval)
+figure_time_filename = figure_time_path + figure_time_name
+ax.get_figure().savefig(figure_time_filename)
 
 # Save MSE DataFrame
 print('Saving the strange mse DataFrames!')
