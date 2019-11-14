@@ -138,15 +138,12 @@ model = tf.keras.models.load_model(model_filename)
 # stored in a format of list of arrays (shape = [n, 128]).
 abnormal_series_list = []
 
-i = 0
+
 print('Start retrieving abnormal series....')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
-    i += 1
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
-    if i > 1:
-        break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -228,7 +225,9 @@ for i in range(len(anom_hat_list)):
     anom_hat = anom_hat_list[i]
     anom_true = anom_true_list[i]
     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=(1,2))
-    print(np.shape(mse))
+    #mse_list.append(mse)
+    #print(np.shape(mse))
+    #print(np.shape(mse_list), i)
 
     # Get full anom error
     full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
@@ -297,20 +296,31 @@ for i in range(len(anom_hat_list)):
         anom_seq = [anom_seq, [2.5]* (len(full_anom_error_df) - len(anom_seq))]
         anom_seq = reduce(operator.add, anom_seq)
 
+    #print(np.shape(anom_seq))
     anom_seq_list.append(anom_seq)
-    mse_list.append(mse)
+    mse_list.append(mse.tolist())
+    #print(np.shape(mse))
+    print('mse_list:', np.shape(mse_list), i)
+    print('anom_seq_list', np.shape(anom_seq_list), i)
+    #mse_list.append(mse)
     # Draw the i th time mse of full anom error
 print('Drawing the full anom time mse plot!')
 anom_seq_list = reduce(operator.add, anom_seq_list)
 mse_list = reduce(operator.add, mse_list)
-plt.figure(figsize=(23, 6))
-ax = sns.lineplot(x=len(anom_seq_list),
-                  y=anom_seq_list)
-ax = sns.scatterplot(x=len(anom_seq_list),
-                  y=mse_list, color='orange')
+print('anom_seq_list:', np.shape(anom_seq_list))
+print('mse_list shape:', np.shape(mse_list))
+chunk = int(len(mse_list) / 4)
+plt.figure()
+for i  in range(4):
+    plt.subplot(4, 1, i+1)
+    ax = sns.lineplot(x=range(chunk),
+                      y=anom_seq_list[chunk * i:chunk * (i+1)])
+    ax = sns.lineplot(x=range(chunk),
+                      y=mse_list[chunk * i:chunk * (i+1)], color='orange')
+    #plt.title('Block' + str(i*23) + ' to block' + str((i+1)*23))
+    plt.ylim(top=3)
+    plt.ylim(bottom=0)
 
-plt.ylim(top=3)
-plt.ylin(bottom=0)
 plt.xlabel('Time')
 plt.ylabel('MSE')
 sns.despine()
@@ -319,7 +329,7 @@ figure_time_name = 'time_mse_{}_{}_{}_{}_{}.png' \
             downsample_ratio, window_predict_size,
             shift_eval)
 figure_time_filename = figure_time_path + figure_time_name
-ax.get_figure().savefig(figure_time_filename)
+ax.get_figure().savefig(figure_time_filename, dpi =1200)
 print(figure_time_filename, 'is saved')
 
 # Save MSE DataFrame
