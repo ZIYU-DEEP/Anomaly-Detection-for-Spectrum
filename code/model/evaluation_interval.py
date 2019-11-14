@@ -138,11 +138,15 @@ model = tf.keras.models.load_model(model_filename)
 # stored in a format of list of arrays (shape = [n, 128]).
 abnormal_series_list = []
 
+i = 0
 print('Start retrieving abnormal series....')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
+    i += 1
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
+    if i > 1:
+        break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -306,6 +310,7 @@ ax = sns.scatterplot(x=len(anom_seq_list),
                   y=mse_list, color='orange')
 
 plt.ylim(top=3)
+plt.ylin(bottom=0)
 plt.xlabel('Time')
 plt.ylabel('MSE')
 sns.despine()
@@ -315,6 +320,7 @@ figure_time_name = 'time_mse_{}_{}_{}_{}_{}.png' \
             shift_eval)
 figure_time_filename = figure_time_path + figure_time_name
 ax.get_figure().savefig(figure_time_filename)
+print(figure_time_filename, 'is saved')
 
 # Save MSE DataFrame
 print('Saving the strange mse DataFrames!')
