@@ -1,4 +1,6 @@
 ##!_bin_bash
+cd ..
+
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/ry2_jcl_mix_G-3/ 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/ry2_jcl_mix_G0/ 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/ry2_jcl_mix_G3/ 10

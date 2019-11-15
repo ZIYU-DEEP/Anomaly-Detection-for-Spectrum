@@ -1,6 +1,7 @@
 ##!_bin_bash
-python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/normal/JCL_1105C 10
+python ../../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/normal/JCL_1105C 10
 
+cd ..
 python featurization.py 10 100 25 JCL_1105C normal
 python training.py 10 100 25 JCL_1105C 25 125 256 200 0
 python evaluation.py 10 100 25 JCL_1105C JCL_sameFBS 125 256 0

@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ..
 
 python featurization.py 100 1000 250 ryerson normal
 python featurization.py 100 1000 250 0208_anomaly abnormal

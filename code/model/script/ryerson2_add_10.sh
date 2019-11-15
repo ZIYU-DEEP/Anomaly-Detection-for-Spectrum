@@ -1,4 +1,5 @@
 ##!_bin_bash
+cd ..
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/ryerson2_same/ 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/ryerson2_diff_G-3/ 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/ryerson2_diff_G0/ 10

@@ -2,6 +2,7 @@
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/normal/JCL 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/JCL/sameFBS 10
 #python ../preprocessing/downsample_parse_data.py /net/adv_spectrum/data/raw/abnormal/JCL/diffFBS 10
+cd ..
 
 python featurization.py 10 100 25 JCL normal
 python featurization.py 10 100 25 JCL_sameFBS abnormal
