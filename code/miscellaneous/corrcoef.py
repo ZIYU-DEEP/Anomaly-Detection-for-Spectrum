@@ -23,11 +23,26 @@ def txt_to_series(file_path, select=100, n_channels=128):
 
     series = np.array(features).reshape((-1, n_channels)).astype('float64')
     return series
+    
+def folder_to_series(file_path, select=2000, n_channels=128):
+    features = []
+    i = 0
+
+    for filename in sorted(glob.glob(file_path + '*.txt')):
+        with open(filename, 'r') as f:
+            for line in f:
+                x = line.split()
+                if i % select == 0:
+                    features.append(x)
+                i += 1
+
+    series = np.array(features).reshape((-1, n_channels)).astype('float64')
+    return series
 
 # Set the reference file
-ry = txt_to_series(ry_path + 'feature_1518554457_880M_5m_ap.txt')
-jcl = txt_to_series(jcl_path + 'feature_1572728951_880M_5m_ap.txt')
-dt = txt_to_series(dt_path + 'feature_1519678799_880M_5m_ap.txt')
+ry = folder_to_series(ry_path)
+jcl = folder_to_series(jcl_path)
+dt = folder_to_series(dt_path)
 
 def all_xcorr(ref, file_path, label):
     for filename in sorted(glob.glob(file_path + '*.txt')):
