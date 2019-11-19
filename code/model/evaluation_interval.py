@@ -41,7 +41,7 @@ all_samp = 200000000 * 2  # all samp per file
 samp_sec = 5000000 * 2  # sample rate, each sample has I/Q 2 values
 interval = 5  # in seconds
 inter_samp = samp_sec * interval / downsample_ratio  # in samp number
-trash_count = 102400  # begining samples being throwed
+trash_count = 102400 / downsample_ratio  # begining samples being throwed
 
 # calculate the intervals in prediction window
 ini_anom = int((((inter_samp - trash_count) / 256) - window_size)
