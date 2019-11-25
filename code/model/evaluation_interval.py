@@ -39,7 +39,7 @@ gpu_no = str(sys.argv[8])
 # Interval values
 all_samp = 200000000 * 2  # all samp per file
 samp_sec = 5000000 * 2  # sample rate, each sample has I/Q 2 values
-interval = 5  # in seconds
+interval = 1  # in seconds
 inter_samp = samp_sec * interval / downsample_ratio  # in samp number
 trash_count = 102400 / downsample_ratio  # begining samples being throwed
 
@@ -239,7 +239,7 @@ for i in range(len(anom_hat_list)):
     cycle = int(all_samp / (2 * samp_sec * interval))
     an_interval = (np.shape(mse)[0] - ini_anom) // 7 + 1
 
-    for j in range(4):
+    for j in range(int(all_samp / downsample_ratio / inter_samp)):
         if j != 0:
             nom_mse.append(mse[ini_anom + an_interval * (2 * j - 1)
                                + up_down_interval:
@@ -375,14 +375,14 @@ ax = sns.kdeplot(anom_down_error_df_pd['anom_down_error '],
                  cumulative=True, shade=False, color='k')
 
 sns.despine()
-ax.hlines(0.9, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100,
-          label='10% FP Threshold', linestyles='dashdot')
-ax.hlines(0.8, ax.get_xlim()[0], ax.get_xlim()[1], colors="purple", zorder=100,
-          label='20% FP Threshold', linestyles='dotted')
-ax.vlines(valid_error_df.quantile(0.8)[0], ymin=0, ymax=0.8, color='purple',
-          linestyles='dotted')
-ax.vlines(valid_error_df.quantile(0.9)[0], ymin=0, ymax=0.9, color='blue',
-          linestyles='dashdot')
+# ax.hlines(0.9, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100,
+#           label='10% FP Threshold', linestyles='dashdot')
+# ax.hlines(0.8, ax.get_xlim()[0], ax.get_xlim()[1], colors="purple", zorder=100,
+#           label='20% FP Threshold', linestyles='dotted')
+# ax.vlines(valid_error_df.quantile(0.8)[0], ymin=0, ymax=0.8, color='purple',
+#           linestyles='dotted')
+# ax.vlines(valid_error_df.quantile(0.9)[0], ymin=0, ymax=0.9, color='blue',
+#           linestyles='dashdot')
 ax.set_title(figure_CDF_name)
 ax.set_xlim(left=0, right=3)
 
