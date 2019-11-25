@@ -104,10 +104,13 @@ def xcorr_fft_pick(xcorr_fft_list, pick_num):
     xcorr_pick_list = [list() for i in range(12)]
     for i in range(12):
         if np.shape(xcorr_fft_list[i])[0] > 0:
-            rand_pick = np.random.randint(np.shape(xcorr_fft_list[i])[0], size = pick_num)
-        # print(np.shape(rand_pick))
-            for j in rand_pick:
-                xcorr_pick_list[i].append(xcorr_fft_list[i][j])
+            if np.shape(xcorr_fft_list[i])[0] > pick_num:
+                rand_pick = np.random.randint(np.shape(xcorr_fft_list[i])[0], size = pick_num)
+            # print(np.shape(rand_pick))
+                for j in rand_pick:
+                    xcorr_pick_list[i].append(xcorr_fft_list[i][j])
+            else:
+                xcorr_pick_list[i] = xcorr_fft_list[i]
     return xcorr_pick_list
 
 
@@ -130,7 +133,7 @@ def get_xcorr_dist(ref, file_path, pick_num):
                     k[index] += 1
             for q in range(12):
                 if k[q] >= np.shape(ref)[0] * 0.5:
-                    print('Found 1 for ', q)
+                    #print('Found 1 for ', q)
                     xcorr_fft_list[q].append(target[i - np.shape(ref)[0]])
                     break
     print('Picking XCorr for '+ file_path)
@@ -170,10 +173,12 @@ def store_xcorr_dist(ref, file_path, loc, pick_num):
     XCorr_file = open(XCorr_path + 'XCorr_ry_' + loc + '.txt', 'a')
     xcorr_pick_list = get_xcorr_dist(ref, file_path, pick_num)
     for i in range(12):
-        if np.shape(xcorr_pick_list[i]):
-            print('Pickup list size ', i, np.shape(xcorr_pick_list[i]))
-            XCorr_file.write(str((i - 2)/10.0) + ', ' + str(np.shape(xcorr_pick_list[i])) + '\n')
+        print('Pickup list size ', i, np.shape(xcorr_pick_list[i])[0])
+        if np.shape(xcorr_pick_list[i])[0]:
+            XCorr_file.write(str((i - 2)/10.0) + ', ' + str(np.shape(xcorr_pick_list[i])[0]) + '\n')
+            print('Saving file ' + XCorr_path + 'XCorr_ry_' + loc + '.txt')
             np.savetxt(XCorr_file, xcorr_pick_list[i])
+    XCorr_file.close()
 
 # Set the reference file
 ry = folder_to_series(ry_path)
@@ -182,7 +187,7 @@ ry = folder_to_series(ry_path)
 
 store_xcorr_dist(ry, dt_path, 'dt', 5)
 store_xcorr_dist(ry, jcl_path, 'jcl', 5)
-store_xcorr_dist(ry, ry_path, 'ry', 5)
+# store_xcorr_dist(ry, ry_path, 'ry', 5)
 
 # store_xcorr_dist(dt, dt_path, 'dt', 5)
 # store_xcorr_dist(dt, jcl_path, 'jcl', 5)
