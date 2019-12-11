@@ -59,6 +59,30 @@ def txt_to_series(file_path, n_channels=128):
 
 
 ##########################################################
+# Array (np.array) to Window (np.array)
+##########################################################
+def array_to_window(X, window_size):
+    """
+    Inputs:
+        X (np.array): Its shape should be (n_time_steps, 128)
+        window_size (int): the number of time steps in a window
+        
+    Return:
+        result (np.array): Its shape should be (n_windows, 1, window_size, 128)
+    """
+    result = []
+    ind = np.arange(0, X.shape[0], window_size)
+    
+    for start, end in zip(ind, np.r_[ind[1:], X.shape[0]]):
+        if end - start < window_size:
+            # Discard the last few lines
+            break
+        result.append([X[start:end, :]])
+        
+    return np.array(result)
+
+
+##########################################################
 # Series (np.array) to Windowed Dataset (tf.data.Dataset)
 ##########################################################
 def windowed_dataset(series, window_size, batch_size, predict_size,
