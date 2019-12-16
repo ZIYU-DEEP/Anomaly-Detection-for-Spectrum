@@ -34,6 +34,33 @@ def add_raw(real_BS, fake_BS, file_out):
     addnum.tofile(oid)
 
 
+def add_raw_time_shift(real_BS, file_out, shift_step):
+    stps = 1000 * 128 * 10 * 2 #shift_time per step
+    rid = open(real_BS, 'rb')
+    oid = open(file_out, 'a')
+    rnum = np.fromfile(rid, np.float32, count=400000000)
+    # print(rnum, np.shape(rnum))
+    rnum2 = rnum[: -stps * shift_step]
+    # print(rnum2, np.shape(rnum2))
+    srnum = rnum[stps * shift_step:]
+    # print(srnum, np.shape(srnum))
+    addnum = srnum + rnum2
+    # print(addnum, np.shape(addnum))
+    addnum.tofile(oid)
+
+
+def add_raw_time_shift_batch(real_BS_path, abnormal_path, shift_step):
+    if not os.path.exists(abnormal_path):
+        os.mkdir(abnormal_path)
+        print(abnormal_path + ' Created')
+    for file in glob.glob(real_BS_path + '/*.dat'):
+        print(file)
+        print('start adding ' + file + ' and ' + str(shift_step) + '-second-shifted file')
+        file_out = file.split('/')[-1].split('.')[0] + '_ts' + str(shift_step) + '.dat'
+        print(file_out)
+        add_raw_time_shift(file, abnormal_path + file_out, shift_step)
+
+
 def add_same_raw(real_BS, fake_BS, file_out, time_interval):
     ## add files on the same raw segment
     rid = open(real_BS, 'rb')
@@ -124,14 +151,19 @@ def add_diff_batch(path, real_BS, power_level):
 #     add_diff_raw(real_BS, fake_BS, G_path + file_out, 5, i*3)
 
 real_BS_path = '/net/adv_spectrum/data/raw/normal/ryerson_test'
-ry_t1_path = '/net/adv_spectrum/data/raw/normal/ryerson_t1'
-ry_t2_path = '/net/adv_spectrum/data/raw/normal/ryerson_t2'
-sr_path = '/net/adv_spectrum/data/raw/normal/searle'
-dt_path = '/net/adv_spectrum/data/raw/normal/downtown'
-jcl_path = '/net/adv_spectrum/data/raw/normal/JCL'
+# ry_t1_path = '/net/adv_spectrum/data/raw/normal/ryerson_t1'
+# ry_t2_path = '/net/adv_spectrum/data/raw/normal/ryerson_t2'
+# sr_path = '/net/adv_spectrum/data/raw/normal/searle'
+# dt_path = '/net/adv_spectrum/data/raw/normal/downtown'
+# jcl_path = '/net/adv_spectrum/data/raw/normal/JCL'
+# abnormal_path = '/net/adv_spectrum/data/raw/abnormal/ryerson_test'
+
+# # add_raw_batch(real_BS_path, ry_t1_path, abnormal_path + '_' + ry_t1_path.split('/')[-1] + '/')
+
+# for path in [ry_t2_path, sr_path, dt_path, jcl_path]:
+#      add_raw_batch(real_BS_path, path, abnormal_path + '_' + path.split('/')[-1] + '/')
+
 abnormal_path = '/net/adv_spectrum/data/raw/abnormal/ryerson_test'
 
-# add_raw_batch(real_BS_path, ry_t1_path, abnormal_path + '_' + ry_t1_path.split('/')[-1] + '/')
-
-for path in [ry_t2_path, sr_path, dt_path, jcl_path]:
-     add_raw_batch(real_BS_path, path, abnormal_path + '_' + path.split('/')[-1] + '/')
+for num in range(10):
+    add_raw_time_shift_batch(real_BS_path, abnormal_path + '_ts' + str(2*num + 1) + '/', 2*num+1)

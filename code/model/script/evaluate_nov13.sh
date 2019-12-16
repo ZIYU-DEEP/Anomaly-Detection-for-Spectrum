@@ -1,0 +1,3 @@
+#!/bin/bash
+cd ..
+python evaluation_joblib_testing.py 10 1000 250 ryerson_train ryerson_test 250 128 3
