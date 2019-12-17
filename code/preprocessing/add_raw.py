@@ -1,19 +1,25 @@
 import numpy as np
 import os
+import sys
 import glob
 import control
-from random import randrange
+import multiprocessing as mp
+import random
 
-real_BS = '.dat'
-fake_BS = '.dat'
+core = int(sys.argv[1])
+fake_BS = sys.argv[2]
+real_num = int(sys.argv[3])
+fake_num = int(sys.argv[4])
+# real_BS = '.dat'
+# fake_BS = '.dat'
 file_out = '.dat'  ## name seq: real_BS-fake_BS-power_level
 time_interval = 5  ## seconds
 all_time = 40  ## seconds
 step_sec = 10000000  ## step number per sec, i.e. sample rate
 power_level = 3  ## power dB
-in_path = '/net/adv_spectrum/data/raw/normal/ryerson2/'
-ry_in_path = '/net/adv_spectrum/data/raw/normal/ryerson2/'
-jcl_in_path = '/net/adv_spectrum/data/raw/normal/JCL/'
+# in_path = '/net/adv_spectrum/data/raw/normal/ryerson2/'
+# ry_in_path = '/net/adv_spectrum/data/raw/normal/ryerson2/'
+# jcl_in_path = '/net/adv_spectrum/data/raw/normal/JCL/'
 
 
 def print_raw(file):
@@ -94,21 +100,6 @@ def add_diff_raw(real_BS, fake_BS, file_out, time_interval, power_level):
             addnum.tofile(oid)
 
 
-def add_raw_batch(real_BS_path, fake_BS_path, abnormal_path):
-    if not os.path.exists(abnormal_path):
-        os.mkdir(abnormal_path)
-        print(abnormal_path + ' Created')
-    fake_BS_files = glob.glob(fake_BS_path + '/*.dat')
-    for file in glob.glob(real_BS_path + '/*.dat'):
-        index = randrange(10)
-        fake_BS = fake_BS_files[index]
-        print(file)
-        print('start adding ' + file + ' and ' + str(index) + ' ' + fake_BS)
-        file_out = file.split('/')[-1].split('_')[0] + '_' + fake_BS.split('/')[-1]
-        print(file_out)
-        add_raw(file, fake_BS, abnormal_path + file_out)
-
-
 def add_same_batch(path, fake_BS):
     ## add same FBS signal on a batch series
     if not os.path.exists(path):
@@ -151,19 +142,61 @@ def add_diff_batch(path, real_BS, power_level):
 #     add_diff_raw(real_BS, fake_BS, G_path + file_out, 5, i*3)
 
 real_BS_path = '/net/adv_spectrum/data/raw/normal/ryerson_test'
-# ry_t1_path = '/net/adv_spectrum/data/raw/normal/ryerson_t1'
-# ry_t2_path = '/net/adv_spectrum/data/raw/normal/ryerson_t2'
-# sr_path = '/net/adv_spectrum/data/raw/normal/searle'
-# dt_path = '/net/adv_spectrum/data/raw/normal/downtown'
-# jcl_path = '/net/adv_spectrum/data/raw/normal/JCL'
-# abnormal_path = '/net/adv_spectrum/data/raw/abnormal/ryerson_test'
+ry_t1_path = '/net/adv_spectrum/data/raw/normal/ryerson_t1'
+ry_t2_path = '/net/adv_spectrum/data/raw/normal/ryerson_t2'
+sr_path = '/net/adv_spectrum/data/raw/normal/searle'
+dt_path = '/net/adv_spectrum/data/raw/normal/downtown'
+jcl_path = '/net/adv_spectrum/data/raw/normal/JCL'
+abnormal_path = '/net/adv_spectrum/data/raw/abnormal/ryerson_test'
+normal_path = '/net/adv_spectrum/data/raw/normal/'
 
-# # add_raw_batch(real_BS_path, ry_t1_path, abnormal_path + '_' + ry_t1_path.split('/')[-1] + '/')
+# add_raw_batch(real_BS_path, ry_t1_path, abnormal_path + '_' + ry_t1_path.split('/')[-1] + '/')
+
+print(fake_BS)
+fake_BS_path = normal_path + fake_BS
+print(fake_BS_path)
+abnormal_path = abnormal_path + '_' + fake_BS_path.split('/')[-1] + '/'
+real_BS_files = glob.glob(real_BS_path + '/*.dat')
+rand_list = random.sample(range(23), real_num)
+real_BS_files = [real_BS_files[i] for i in rand_list]
+fake_BS_files = glob.glob(fake_BS_path + '/*.dat')
+print(np.shape(fake_BS_files))
+real_per_core = real_num // core
+
+def add_raw_batch(index):
+    if not os.path.exists(abnormal_path):
+        os.mkdir(abnormal_path)
+        print(abnormal_path + ' Created')
+    files = [real_BS_files[i*core + index] for i in range(real_per_core)]
+    # print(files)
+    for file in files:
+        rand_list = random.sample(range(10), fake_num) 
+        # print(rand_list)
+        for rand in rand_list:
+            fake_BS = fake_BS_files[rand]
+            # print(file)
+            print('start adding ' + file + ' and ' + str(index) + ' ' + fake_BS)
+            file_out = file.split('/')[-1].split('_')[0] + '_' + fake_BS.split('/')[-1]
+            if not os.path.exists(file_out):
+                print(file_out)
+                add_raw(file, fake_BS, abnormal_path + file_out)
+                print(file_out + ' is successfully generated')
+            else:
+                print(file_out + ' already exists, start processing the next file.')
 
 # for path in [ry_t2_path, sr_path, dt_path, jcl_path]:
 #      add_raw_batch(real_BS_path, path, abnormal_path + '_' + path.split('/')[-1] + '/')
 
-abnormal_path = '/net/adv_spectrum/data/raw/abnormal/ryerson_test'
+# abnormal_path = '/net/adv_spectrum/data/raw/abnormal/ryerson_test'
 
-for num in range(10):
-    add_raw_time_shift_batch(real_BS_path, abnormal_path + '_ts' + str(2*num + 1) + '/', 2*num+1)
+# for num in range(10):
+#     add_raw_time_shift_batch(real_BS_path, abnormal_path + '_ts' + str(2*num + 1) + '/', 2*num+1)
+
+def multicore_add_raw_batch(core, index):
+	## run faster using multiprocessing on multicores of CPU
+	pool = mp.Pool(processes = core)
+	pool.map(add_raw_batch, index)
+	return
+
+if __name__ == "__main__":
+    multicore_add_raw_batch(core, range(core))
