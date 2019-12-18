@@ -163,10 +163,11 @@ fake_BS_files = glob.glob(fake_BS_path + '/*.dat')
 print(np.shape(fake_BS_files))
 real_per_core = real_num // core
 
+if not os.path.exists(abnormal_path):
+    os.mkdir(abnormal_path)
+    print(abnormal_path + ' Created')
+    
 def add_raw_batch(index):
-    if not os.path.exists(abnormal_path):
-        os.mkdir(abnormal_path)
-        print(abnormal_path + ' Created')
     files = [real_BS_files[i*core + index] for i in range(real_per_core)]
     # print(files)
     for file in files:
