@@ -218,7 +218,7 @@ cut = valid_error_df.quantile(0.9)[0]
 cut95 = valid_error_df.quantile(0.95)[0]
 cut99 = valid_error_df.quantile(0.99)[0]
 i = 0
-print('False Positive Rate: 10%')
+# print('False Positive Rate: 10%')
 
 # Write relevant information
 f = open(model_info_filename, 'w')
