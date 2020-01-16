@@ -237,7 +237,7 @@ for i in range(len(anom_hat_list)):
     nom_mse = [mse[0: (ini_anom - up_down_interval)]]
     print('nom_mse:', 0, ini_anom - up_down_interval)
     cycle = int(all_samp / (2 * samp_sec * interval))
-    an_interval = (np.shape(mse)[0] - ini_anom) // 7 + 1
+    an_interval = (np.shape(mse)[0] - ini_anom) // (cycle - 1) + 1
 
     for j in range(int(all_samp / downsample_ratio / inter_samp)):
         if j != 0:

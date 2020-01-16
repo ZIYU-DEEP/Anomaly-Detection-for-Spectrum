@@ -6,7 +6,7 @@ Declaration: Function `standard()` and `extract()` credit to Zhijing Li
 
 import warnings
 warnings.filterwarnings('ignore')
-
+import re
 import numpy as np
 import tensorflow as tf
 
@@ -26,12 +26,28 @@ def standard(sequence, mean_data, std_data):
     return ret
 
 
+def str_to_flt(a):
+    ## handle errors like unexpected contacnated data
+    ## some downsampled data overflows and cause connected strings
+    b = [] # the splitted list of strings
+    len(re.findall("-", '-50--47.53'))
+    for i in range(len(a)):
+        if len(re.findall("-", a[i])) > 1:
+            for k in a[i].split('-'):
+                if k != '':
+                    b.append('-' + k)
+        else:
+            b.append(a[i])
+    c = [float(b[i]) for i in range(len(b))]
+    return c
+
+
 def extract_method3(filename, out, timestamps, predict_len):
     data = []
     with open(filename, 'r') as f:
         for line in f:
             a = line.split()
-            data.extend([float(a[i]) for i in range(len(a))])
+            data.extend(str_to_flt(a))
             if len(data) == timestamps * 128:
                 mean_data = np.mean(data)
                 std_data = np.std(data)
