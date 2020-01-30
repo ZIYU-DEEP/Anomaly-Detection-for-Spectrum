@@ -39,15 +39,15 @@ gpu_no = str(sys.argv[8])
 # Interval values
 all_samp = 200000000 * 2  # all samp per file
 samp_sec = 5000000 * 2  # sample rate, each sample has I/Q 2 values
-interval = 1  # in seconds
+interval = 5  # in seconds
 inter_samp = samp_sec * interval / downsample_ratio  # in samp number
-trash_count = 102400 / downsample_ratio  # begining samples being throwed
+trash_count = 102400  # begining samples being throwed
 
 # calculate the intervals in prediction window
 ini_anom = int((((inter_samp - trash_count) / 256) - window_size)
                // shift_eval)
 anom_interval = int(((inter_samp / 256) - window_size) // shift_eval)
-up_down_interval = 10 #int(window_size // shift_eval)
+up_down_interval = int(window_size // shift_eval + 1)
 
 # Set gpu environment
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu_no
@@ -138,12 +138,12 @@ model = tf.keras.models.load_model(model_filename)
 # stored in a format of list of arrays (shape = [n, 128]).
 abnormal_series_list = []
 
-
 print('Start retrieving abnormal series....')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
     series = utils.txt_to_series(filename)
     abnormal_series_list.append(series)
+    break
 
 # Comment out the following operation if you do not need validation data
 with open(full_x_valid_filename, 'rb') as f:
@@ -164,9 +164,9 @@ print('Validation spends {} seconds! Hmm...'.format(validation_time))
 
 # Get valid true
 if shift_eval == predict_size + window_size:
-    valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size).reshape(-1, shift_eval, 128)
+    valid_true = utils.windowed_true(full_x_valid, shift_eval, predict_size)
 else:
-    valid_true = full_x_valid[window_size:, :].reshape(-1, shift_eval, 128)
+    valid_true = full_x_valid[window_size:, :].reshape((-1, shift_eval, 128))
 
 # Create mse DataFrame
 valid_mse = np.mean(np.power(valid_hat - valid_true, 2), axis=(1, 2))
@@ -179,21 +179,15 @@ valid_error_df.to_pickle(valid_error_df_filename)
 # 4. Construct MSE DataFrame for Full Anom Data
 ##########################################################
 # Construct MSE DataFrame
-for i in 
-print(np.shape(abnormal_series_list[0]))
-print(utils.model_forecast(model, abnormal_series_list[0], batch_size, window_size, predict_size, shift_eval).shape)
-print(utils.windowed_true(abnormal_series_list[0], shift_eval, predict_size).shape)
-
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
-                                      predict_size, shift_eval)
-                                    #   .reshape(-1, shift_eval, 128)
+                                      predict_size, shift_eval).reshape(-1, shift_eval, 128)
                  for i in abnormal_series_list]
 
 if shift_eval == predict_size + window_size:
     anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
                       for i in abnormal_series_list]
 else:
-    anom_true_list = [i[window_size:, :].reshape(-1, shift_eval, 128)
+    anom_true_list = [i[window_size:, :].reshape((-1, shift_eval, 128))
                       for i in abnormal_series_list]
 
 ##########################################################
@@ -218,9 +212,6 @@ anom_down_error_df_pd = pd.DataFrame()
 # MSE of full data
 full_anom_error_df_list = []
 
-anom_seq_list = []
-mse_list = []
-
 for i in range(len(anom_hat_list)):
     print('Processing the {} th anom hat list!'.format(i))
     nom_mse = []
@@ -230,9 +221,7 @@ for i in range(len(anom_hat_list)):
     anom_hat = anom_hat_list[i]
     anom_true = anom_true_list[i]
     mse = np.mean(np.power(anom_hat - anom_true, 2), axis=(1,2))
-    #mse_list.append(mse)
-    #print(np.shape(mse))
-    #print(np.shape(mse_list), i)
+    print(np.shape(mse))
 
     # Get full anom error
     full_anom_error_df = pd.DataFrame({'full_anom_error ' + str(i): mse})
@@ -240,30 +229,26 @@ for i in range(len(anom_hat_list)):
 
     # Get nom, anom, anom_up, anom_down
     nom_mse = [mse[0: (ini_anom - up_down_interval)]]
-    print('nom_mse:', 0, ini_anom - up_down_interval)
-    cycle = int(all_samp / (2 * samp_sec * interval))
-    an_interval = (np.shape(mse)[0] - ini_anom) // (cycle - 1) + 1
+    cycle = int(all_samp / (2 * samp_sec))
 
-    for j in range(int(all_samp / downsample_ratio / inter_samp)):
+    for j in range(cycle):
         if j != 0:
-            nom_mse.append(mse[ini_anom + an_interval * (2 * j - 1)
+            nom_mse.append(mse[ini_anom + anom_interval * (2 * j - 1)
                                + up_down_interval:
-                               ini_anom + an_interval * (2 * j)
+                               ini_anom + anom_interval * (2 * j)
                                - up_down_interval])
-            print('nom_mse:', ini_anom + an_interval * (2 * j - 1)+ up_down_interval, ini_anom + an_interval * (2 * j) - up_down_interval)
-        anom_mse.append(mse[ini_anom + (2 * j) * an_interval
+        anom_mse.append(mse[ini_anom + (2 * j) * anom_interval
                             + up_down_interval:
-                            ini_anom + (2 * j + 1) * an_interval
+                            ini_anom + (2 * j + 1) * anom_interval
                             - up_down_interval])
-        print('anom_mse:', ini_anom + an_interval * (2 * j) + up_down_interval, ini_anom + an_interval * (2*j+1) - up_down_interval)
-        anom_up_mse.append(mse[ini_anom + an_interval * (2 * j)
+        anom_up_mse.append(mse[ini_anom + anom_interval * (2 * j)
                                - up_down_interval:
-                               ini_anom + (2 * j) * an_interval + up_down_interval])
-        print('anom_up_mse', ini_anom + an_interval * (2 * j)- up_down_interval, ini_anom + (2 * j) * an_interval + up_down_interval)
-        anom_down_mse.append(mse[ini_anom + (2 * j + 1) * an_interval
+                               ini_anom + (2 * j) * anom_interval
+                               + up_down_interval])
+        anom_down_mse.append(mse[ini_anom + (2 * j + 1) * anom_interval
                                  - up_down_interval:
-                                 ini_anom + (2 * j + 1) * an_interval + up_down_interval])
-        print('anom_down_mse', ini_anom + an_interval * (2 * j+1)- up_down_interval, ini_anom + (2 * j +1) * an_interval + up_down_interval)
+                                 ini_anom + (2 * j + 1) * anom_interval
+                                 + up_down_interval])
 
     nom_mse = [l.tolist() for l in nom_mse]
     nom_mse = reduce(operator.add, nom_mse)
@@ -287,55 +272,34 @@ for i in range(len(anom_hat_list)):
 
     print(np.shape(nom_mse), np.shape(anom_mse), np.shape(anom_up_mse), np.shape(anom_down_mse))
 
-    anom_seq = [[2] * ini_anom]
+    anom_seq = [[5] * ini_anom]
     #anom_seq = [[5] * int((inter_samp - trash_count) / 256)]
-    #an_interval = (np.shape(mse)[0] - ini_anom) // 7
-    for k in range(cycle):
-        anom_seq.append([2.5] * an_interval)
-        if k != cycle - 1:
-            anom_seq.append([2] * an_interval)
+    an_interval = (np.shape(mse)[0] - ini_anom) // 7
+    for i in range(cycle):
+        anom_seq.append([6] * an_interval)
+        if i != cycle - 1:
+            anom_seq.append([5] * an_interval)
     anom_seq = reduce(operator.add, anom_seq)
-    if len(anom_seq) > len(full_anom_error_df):
-        anom_seq = anom_seq[0:len(full_anom_error_df)]
-    else:
-        anom_seq = [anom_seq, [2.5]* (len(full_anom_error_df) - len(anom_seq))]
-        anom_seq = reduce(operator.add, anom_seq)
-
-    #print(np.shape(anom_seq))
-    anom_seq_list.append(anom_seq)
-    mse_list.append(mse.tolist())
-    #print(np.shape(mse))
-    print('mse_list:', np.shape(mse_list), i)
-    print('anom_seq_list', np.shape(anom_seq_list), i)
-    #mse_list.append(mse)
+    anom_seq = anom_seq[0:len(full_anom_error_df)]
+    #anom_seq = [anom_seq, [6]* (len(full_anom_error_df) - len(anom_seq))]
+    #anom_seq = reduce(operator.add, anom_seq)
     # Draw the i th time mse of full anom error
-print('Drawing the full anom time mse plot!')
-anom_seq_list = reduce(operator.add, anom_seq_list)
-mse_list = reduce(operator.add, mse_list)
-print('anom_seq_list:', np.shape(anom_seq_list))
-print('mse_list shape:', np.shape(mse_list))
-chunk = int(len(mse_list) / 4)
-plt.figure()
-for i  in range(4):
-    plt.subplot(4, 1, i+1)
-    ax = sns.lineplot(x=range(chunk),
-                      y=anom_seq_list[chunk * i:chunk * (i+1)])
-    ax = sns.lineplot(x=range(chunk),
-                      y=mse_list[chunk * i:chunk * (i+1)], color='orange')
-    #plt.title('Block' + str(i*23) + ' to block' + str((i+1)*23))
-    plt.ylim(top=3)
-    plt.ylim(bottom=0)
+    print('Drawing the {} th full anom time mse plot!'.format(i))
+    plt.figure(figsize=(23, 6))
+    ax = sns.lineplot(x=full_anom_error_df.index,
+                      y=anom_seq)
+    ax = sns.scatterplot(x=full_anom_error_df.index,
+                      y=full_anom_error_df.iloc[:, 0], hue="continent")
 
-plt.xlabel('Time')
-plt.ylabel('MSE')
-sns.despine()
-figure_time_name = 'time_mse_{}_{}_{}_{}_{}.png' \
-    .format(normal_folder, anomaly_folder,
-            downsample_ratio, window_predict_size,
-            shift_eval)
-figure_time_filename = figure_time_path + figure_time_name
-ax.get_figure().savefig(figure_time_filename, dpi =1200)
-print(figure_time_filename, 'is saved')
+    plt.xlabel('Time')
+    plt.ylabel('MSE')
+    sns.despine()
+    figure_time_name = 'time_mse_{}_{}_{}_{}_{}_{}.png' \
+        .format(normal_folder, anomaly_folder, i,
+                downsample_ratio, window_predict_size,
+                shift_eval)
+    figure_time_filename = figure_time_path + figure_time_name
+    ax.get_figure().savefig(figure_time_filename)
 
 # Save MSE DataFrame
 print('Saving the strange mse DataFrames!')
@@ -380,14 +344,14 @@ ax = sns.kdeplot(anom_down_error_df_pd['anom_down_error '],
                  cumulative=True, shade=False, color='k')
 
 sns.despine()
-# ax.hlines(0.9, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100,
-#           label='10% FP Threshold', linestyles='dashdot')
-# ax.hlines(0.8, ax.get_xlim()[0], ax.get_xlim()[1], colors="purple", zorder=100,
-#           label='20% FP Threshold', linestyles='dotted')
-# ax.vlines(valid_error_df.quantile(0.8)[0], ymin=0, ymax=0.8, color='purple',
-#           linestyles='dotted')
-# ax.vlines(valid_error_df.quantile(0.9)[0], ymin=0, ymax=0.9, color='blue',
-#           linestyles='dashdot')
+ax.hlines(0.9, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100,
+          label='10% FP Threshold', linestyles='dashdot')
+ax.hlines(0.8, ax.get_xlim()[0], ax.get_xlim()[1], colors="purple", zorder=100,
+          label='20% FP Threshold', linestyles='dotted')
+ax.vlines(valid_error_df.quantile(0.8)[0], ymin=0, ymax=0.8, color='purple',
+          linestyles='dotted')
+ax.vlines(valid_error_df.quantile(0.9)[0], ymin=0, ymax=0.9, color='blue',
+          linestyles='dashdot')
 ax.set_title(figure_CDF_name)
 ax.set_xlim(left=0, right=3)
 
