@@ -36,9 +36,9 @@ gpu_no = int(sys.argv[8])
 
 # Set gpu environment
 # os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_no)
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_visible_devices(physical_devices[gpu_no], 'GPU')
-logical_devices = tf.config.experimental.list_logical_devices('GPU')
+# physical_devices = tf.config.experimental.list_physical_devices('GPU')
+# tf.config.experimental.set_visible_devices(physical_devices[gpu_no], 'GPU')
+# logical_devices = tf.config.experimental.list_logical_devices('GPU')
 
 # String variables
 downsample_str = 'downsample_' + str(downsample_ratio)
