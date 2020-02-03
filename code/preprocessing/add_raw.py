@@ -173,7 +173,7 @@ def add_raw_batch(index):
     files = [real_BS_files[i*core + index] for i in range(real_per_core)]
     # print(files)
     for file in files:
-        rand_list = random.sample(range(6), fake_num) 
+        rand_list = random.sample(range(5), fake_num) 
         # print(rand_list)
         for rand in rand_list:
             fake_BS = fake_BS_files[rand]
