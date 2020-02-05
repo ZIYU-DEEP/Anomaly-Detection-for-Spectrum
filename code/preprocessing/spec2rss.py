@@ -3,8 +3,8 @@ import glob
 import sys
 import os
 
-folder = sys.argv[1]
-state = sys.argv[2]
+folder = sys.argv[1]  # e.g. ryerson_ab_train_sigOver
+state = sys.argv[2]  # e.g. abnormal
 ds_spec_path = '/net/adv_spectrum/data/downsample/downsample_10/' + state + '/' + folder + '/'
 rss_path = '/net/adv_spectrum/data/rss/downsample_10/' + state + '/' + folder + '/'
 
