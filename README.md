@@ -3,11 +3,13 @@
 ## 1. Datasets Description
 
 ## 2. Candidate Models
-### 2.1 Shallow Models (Unsupervised)
+### 2.1. Shallow Models (Unsupervised)
 - PCA
 - OCSVM
 - LOF
 - IForest
+### 2.2. Deep Models
+
 
 ## 3. Result Tables
 
