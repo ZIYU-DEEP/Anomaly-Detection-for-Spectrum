@@ -137,7 +137,7 @@ model = tf.keras.models.\
 
 es = EarlyStopping(monitor='mean_squared_error',
                    min_delta=0.0001,
-                   patience=5)
+                   patience=12)
 
 model.compile(loss='mean_squared_error',
               optimizer='adam',
