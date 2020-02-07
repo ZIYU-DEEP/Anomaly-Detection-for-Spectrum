@@ -226,7 +226,8 @@ f.write('Model Info filename: {}\n'.format(model_info_filename))
 f.write('Model size: {}\n'.format(model_size))
 f.write('Validation time: {}'.format(validation_time))
 
-f.write('FPR = 0.1')
+f.write('FPR = 0.1\n')
+print('FPR = 0.1\n')
 for df in anom_error_df_list:
     y = [1 if e > cut else 0 for e in df['anom_error ' + str(i)].values]
     detect_rate = sum(y) / len(y)
@@ -236,7 +237,8 @@ for df in anom_error_df_list:
     i += 1
 
 i = 0
-f.write('FPR = 0.05')
+f.write('\nFPR = 0.05\n')
+print('FPR = 0.05\n')
 for df in anom_error_df_list:
     y = [1 if e > cut95 else 0 for e in df['anom_error ' + str(i)].values]
     detect_rate = sum(y) / len(y)
@@ -246,7 +248,8 @@ for df in anom_error_df_list:
     i += 1
 
 i = 0
-f.write('FPR = 0.01')
+f.write('\nFPR = 0.1\n')
+print('\nFPR = 0.1\n')
 for df in anom_error_df_list:
     y = [1 if e > cut99 else 0 for e in df['anom_error ' + str(i)].values]
     detect_rate = sum(y) / len(y)
