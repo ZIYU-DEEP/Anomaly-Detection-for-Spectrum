@@ -10,12 +10,8 @@ import matplotlib.pyplot as plt
 
 
 lambda_path = '/home/shinanliu/lambda/'
-ry_path = '/net/adv_spectrum/data/downsample/downsample_10/normal/ryerson_all/'
-jcl_path = '/net/adv_spectrum/data/downsample/downsample_10/normal/JCL/'
-dt_path = '/net/adv_spectrum/data/downsample/downsample_10/normal/downtown/'
-mb_path = '/net/adv_spectrum/data/downsample/downsample_10/normal/Mobile/'
-
-
+all_normal_path = glob.glob('/net/adv_spectrum/data/downsample/downsample_10/normal/*/')
+all_abnormal_path = glob.glob('/net/adv_spectrum/data/downsample/downsample_10/abnormal/*/')
 
 def folder_to_series(file_path, label, n_channels=1):
     features = []
@@ -57,63 +53,26 @@ def folder_to_control_series(file_path, label, n_channels=1):
     return pd.DataFrame({'Power of ' + label: features})
 
 
-def plot_power_cdf():
+def plot_power_cdf(path_list, fig_name):
     sns.set_style('white')
     plt.figure()
 
-    # label = 'JCL'
-    # print('Start processing ' + label)
-    # power_df = folder_to_series(jcl_path, label)
-    # print('Start plotting power cdf of ' + label)
-    # ax = sns.kdeplot(power_df['Power of ' + label], cumulative=True, shade=False,
-    #                 color='b')
-    # ax.hlines(0.95, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100, 
-    #                 linestyles='dashdot')
-    # print(power_df.quantile(0.95))
-    # ax.vlines(power_df.quantile(0.95)[0], ymin=0, ymax=0.95, color='blue', 
-    #                 linestyles='dashdot')
-
-    label = 'Stable' # Ryerson
-    power_df = folder_to_series(ry_path, label)
-    print('Start plotting power cdf of ' + label)
-    ax = sns.kdeplot(power_df['Power of ' + label], cumulative=True, shade=False,
-                    color='r')
-    ax.hlines(0.95, ax.get_xlim()[0], ax.get_xlim()[1], colors="red", zorder=100, 
-                    linestyles='dashdot')
-    print(power_df.quantile(0.95))
-    ax.vlines(power_df.quantile(0.95)[0], ymin=0, ymax=0.9, color='red', 
-                    linestyles='dashdot')
-
-    label = 'Semi-stable' # Downtown
-    power_df = folder_to_series(dt_path, label)
-    ax = sns.kdeplot(power_df['Power of ' + label], cumulative=True, shade=False,
-                    color='g')
-    ax.hlines(0.95, ax.get_xlim()[0], ax.get_xlim()[1], colors="green", zorder=100, 
-                    linestyles='dashdot')
-    print(power_df.quantile(0.95))
-    ax.vlines(power_df.quantile(0.95)[0], ymin=0, ymax=0.95, color='green', 
-                    linestyles='dashdot')
-
-    label = 'Dynamic' # Mobile, campus_driving
-    power_df = folder_to_series(mb_path, label)
-    print('Start plotting power cdf of ' + label)
-    ax = sns.kdeplot(power_df['Power of ' + label], cumulative=True, shade=False,
-                    color='b')
-    ax.hlines(0.95, ax.get_xlim()[0], ax.get_xlim()[1], colors="blue", zorder=100, 
-                    linestyles='dashdot')
-    print(power_df.quantile(0.95))
-    ax.vlines(power_df.quantile(0.95)[0], ymin=0, ymax=0.9, color='blue', 
-                    linestyles='dashdot')
+    for path in path_list:
+        label = path.split('/')[-2] # Ryerson
+        power_df = folder_to_series(path, label)
+        print('Start plotting power cdf of ' + label)
+        ax = sns.kdeplot(power_df['Power of ' + label], cumulative=False, shade=False)
+        print(power_df.quantile(0.95))
 
     ax.set_title('Power CDF')
-    plt.legend(loc=2)
+    plt.legend(loc=0)
     plt.xlabel('Power(in dB)')
     plt.ylabel('CDF')
 
-    ax.get_figure().savefig(lambda_path + '3ob.png', ppi = 1200)
-    print(label + 'power_all.png is successfully generated')
+    ax.get_figure().savefig(lambda_path + fig_name + '.png', ppi = 1200)
+    print(fig_name + '.png is successfully generated')
 
-plot_power_cdf()
-# plot_power_cdf(dt_path, 'downtown')
-# plot_power_cdf(jcl_path, 'jcl')
-# plot_power_cdf(ry_path, 'ryerson')
+abnor_path = ['LOS-5M-USRP1', 'LOS-5M-USRP2', 'LOS-5M-USRP3', 'NLOS-5M-USRP1', 'Dynamics-5M-USRP1']
+abnor_path = ['/net/adv_spectrum/data/downsample/downsample_10/abnormal/' + i + '/' for i in abnor_path]
+# print(abnor_path)
+plot_power_cdf(abnor_path, 'FBS_PDF')
