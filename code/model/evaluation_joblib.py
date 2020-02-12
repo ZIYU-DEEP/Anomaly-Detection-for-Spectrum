@@ -129,17 +129,17 @@ print('Start constructing mse DataFrame...')
 # Get valid_hat and evaluate time
 start = timer()
 valid_hat = utils.model_forecast(model, full_x_valid, batch_size, window_size,
-                                 predict_size, shift_eval).reshape(-1, 128)
+                                 predict_size, shift_eval)
 end = timer()
 validation_time = (start - end) / (len(full_x_valid) // shift_eval)
 print('Validation spends {} seconds! Hmm...'.format(validation_time))
 
 # Get valid true
 valid_hat_dim = np.shape(valid_hat)[0]
-valid_true = np.reshape(utils.windowed_true(full_x_valid, shift_eval, predict_size), (-1, 128))
+valid_true = np.reshape(utils.windowed_true(full_x_valid, shift_eval, predict_size), (-1, predict_size, 128))
 
 # Create mse DataFrame
-valid_mse = np.mean(np.power(valid_hat - valid_true[0:valid_hat_dim], 2), axis=1)
+valid_mse = np.mean(np.power(valid_hat - valid_true[:valid_hat_dim], 2), axis=(1, 2))
 valid_error_df = pd.DataFrame({'valid_error': valid_mse})
 
 # Save MSE DataFrame
@@ -151,7 +151,7 @@ valid_error_df.to_pickle(valid_error_df_filename)
 ##########################################################
 # Construct MSE DataFrame
 anom_hat_list = [utils.model_forecast(model, i, batch_size, window_size,
-                                      predict_size, shift_eval).reshape(-1, 128)
+                                      predict_size, shift_eval)
                  for i in abnormal_series_list]
 anom_true_list = [utils.windowed_true(i, shift_eval, predict_size)
                   for i in abnormal_series_list]
@@ -161,9 +161,9 @@ anom_error_df_list = []
 for i in range(len(anom_hat_list)):
     anom_hat = anom_hat_list[i]
     anom_hat_dim = np.shape(anom_hat)[0]
-    anom_true = np.reshape(anom_true_list[i], (-1, 128))
+    anom_true = np.reshape(anom_true_list[i], (-1, predict_size, 128))
 
-    anom_mse = np.mean(np.power(anom_hat - anom_true[0: anom_hat_dim], 2), axis=1)
+    anom_mse = np.mean(np.power(anom_hat - anom_true[:anom_hat_dim], 2), axis=(1, 2))
     anom_error_df = pd.DataFrame({'anom_error ' + str(i): anom_mse})
     anom_error_df_list.append(anom_error_df)
 
@@ -227,7 +227,7 @@ f.write('Model size: {}\n'.format(model_size))
 f.write('Validation time: {}'.format(validation_time))
 
 f.write('FPR = 0.1\n')
-print('FPR = 0.1\n')
+print('\nFPR = 0.1\n')
 for df in anom_error_df_list:
     y = [1 if e > cut else 0 for e in df['anom_error ' + str(i)].values]
     detect_rate = sum(y) / len(y)
