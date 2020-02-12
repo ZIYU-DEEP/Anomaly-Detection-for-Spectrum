@@ -248,8 +248,8 @@ for df in anom_error_df_list:
     i += 1
 
 i = 0
-f.write('\nFPR = 0.1\n')
-print('\nFPR = 0.1\n')
+f.write('\nFPR = 0.01\n')
+print('\nFPR = 0.01\n')
 for df in anom_error_df_list:
     y = [1 if e > cut99 else 0 for e in df['anom_error ' + str(i)].values]
     detect_rate = sum(y) / len(y)
