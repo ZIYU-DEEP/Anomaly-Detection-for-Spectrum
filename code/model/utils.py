@@ -140,3 +140,16 @@ def windowed_true(series, shift_size, predict_size):
     return np.array([series[shift_size * i - predict_size: shift_size * i, :]
                     .reshape((-1, predict_size, 128))
                     for i in range(1, (len(series) // shift_size) + 1)])
+
+
+def windowed_true_control(series, shift_size, predict_size):
+    """
+    Input:
+          series (numpy array): the array we would like to make prediction on
+    Output:
+          series_true (numpy array): the windowed series which is comparable
+          with series_hat (output of model_forecast)
+    """
+    return np.array([series[shift_size * i - predict_size: shift_size * i, :]
+                    .reshape((-1, predict_size, 36))
+                    for i in range(1, (len(series) // shift_size) + 1)])
