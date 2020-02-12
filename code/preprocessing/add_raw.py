@@ -141,13 +141,13 @@ def add_diff_batch(path, real_BS, power_level):
 #     print('start adding ' + real_BS + ' and ' + fake_BS + ', on power level ' + str(i*3))
 #     add_diff_raw(real_BS, fake_BS, G_path + file_out, 5, i*3)
 
-real_BS_path = '/net/adv_spectrum/data/raw/normal/ryerson_ab_train'
+real_BS_path = '/net/adv_spectrum/data/raw/normal/downtown'
 ry_t1_path = '/net/adv_spectrum/data/raw/normal/ryerson_t1'
 ry_t2_path = '/net/adv_spectrum/data/raw/normal/ryerson_t2'
 sr_path = '/net/adv_spectrum/data/raw/normal/searle'
 dt_path = '/net/adv_spectrum/data/raw/normal/downtown'
 jcl_path = '/net/adv_spectrum/data/raw/normal/JCL'
-abnormal_path = '/net/adv_spectrum/data/raw/abnormal/ryerson_ab_train'
+abnormal_path = '/net/adv_spectrum/data/raw/abnormal/downtown'
 FBSpath = '/net/adv_spectrum/data/raw/abnormal/'
 
 # add_raw_batch(real_BS_path, ry_t1_path, abnormal_path + '_' + ry_t1_path.split('/')[-1] + '/')
@@ -158,7 +158,7 @@ print(fake_BS_path)
 abnormal_path = abnormal_path + '_' + fake_BS_path.split('/')[-1] + '/'
 real_BS_files = glob.glob(real_BS_path + '/*.dat')
 print(np.shape(real_BS_files))
-rand_list = random.sample(range(23), real_num)
+rand_list = random.sample(range(10), real_num)
 print(rand_list)
 real_BS_files = [real_BS_files[i] for i in rand_list]
 fake_BS_files = glob.glob(fake_BS_path + '/*.dat')
