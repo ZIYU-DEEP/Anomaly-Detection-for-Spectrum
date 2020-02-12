@@ -117,7 +117,7 @@ abnormal_series_list = []
 print('Start retrieving abnormal series....')
 for filename in sorted(glob.glob(abnormal_output_path + '*.txt')):
     print(filename)
-    series = utils.txt_to_series(filename)[:, :, 87:123]
+    series = utils.txt_to_series(filename)[:, 87:123]
     abnormal_series_list.append(series)
 
 # Comment out the following operation if you do not need validation data

@@ -76,7 +76,7 @@ normal_series_list = []
 print('Start constructing normal series....')
 for filename in sorted(glob.glob(normal_output_path + '*.txt')):
     print(filename)
-    series = utils.txt_to_series(filename)[:, :, 87:123]
+    series = utils.txt_to_series(filename)[:, 87:123]
     print(series.shape)
     normal_series_list.append(series)
 
