@@ -48,10 +48,11 @@ def add_spec(filename, start_freq, bandwidth, period):
             break
         # modify specific slot according to the start_freq and channel bandwidth
         mod_slot = [float(j) for j in fid.readline().split()]
+        # print(np.shape(mod_slot))
         if np.shape(mod_slot)[0] == 128:
             line_count += 1
-    #         print(int(start_freq / 5 * Slen), int((start_freq + bandwidth) / 5 * Slen))
-    #         print(mod_slot[int(start_freq / 5 * Slen): int((start_freq + bandwidth) / 5 * Slen)])
+            # print(int(start_freq / 5 * Slen), int((start_freq + bandwidth) / 5 * Slen))
+            # print(mod_slot[int(start_freq / 5 * Slen): int((start_freq + bandwidth) / 5 * Slen)])
             for k in range(int(start_freq / 5 * Slen), int((start_freq + bandwidth) / 5 * Slen)):
                 mod_slot[k] += 3
                 # try:
