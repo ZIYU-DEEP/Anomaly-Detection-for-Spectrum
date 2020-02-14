@@ -4,7 +4,7 @@ import os
 import glob
 
 ori_folder = '/net/adv_spectrum/data/downsample/downsample_10/normal/' + sys.argv[1] + '/'
-so_folder = '/net/adv_spectrum/data/downsample/downsample_10/abnormal/' + sys.argv[1] + '_sigOver_' + str(sys.argv[4]) + 'ms/'
+so_folder = '/net/adv_spectrum/data/downsample/downsample_10/abnormal/' + sys.argv[1] + '_sigOver/'
 if not os.path.exists(so_folder):
     os.makedirs(so_folder)
     print(so_folder + ' is created')
