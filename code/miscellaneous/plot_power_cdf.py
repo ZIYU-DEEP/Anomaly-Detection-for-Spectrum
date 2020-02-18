@@ -15,7 +15,7 @@ all_abnormal_path = glob.glob('/net/adv_spectrum/data/downsample/downsample_10/a
 
 def folder_to_series(file_path, label, n_channels=1):
     features = []
-    for filename in sorted(glob.glob(file_path + '*.txt')):
+    for filename in sorted(glob.glob(file_path + '/*.txt')):
         print('Beginning to process ' + filename)
         with open(filename, 'r') as f:
             for line in f:
@@ -25,7 +25,7 @@ def folder_to_series(file_path, label, n_channels=1):
                     features.append(po)
     print(np.shape(features))
     print('Series of ' + file_path + ' is already constructed.')
-    return pd.DataFrame({'Power of ' + label: features})
+    return pd.DataFrame({label: features})
 
 
 def folder_to_control_series(file_path, label, n_channels=1):
@@ -50,7 +50,7 @@ def folder_to_control_series(file_path, label, n_channels=1):
     # features = reduce(operator.add, features)
     print(np.shape(features))
     print('Series of ' + file_path + ' is already constructed.')
-    return pd.DataFrame({'Power of ' + label: features})
+    return pd.DataFrame({label: features})
 
 
 def plot_power_cdf(path_list, fig_name):
@@ -58,21 +58,25 @@ def plot_power_cdf(path_list, fig_name):
     plt.figure()
 
     for path in path_list:
-        label = path.split('/')[-2] # Ryerson
-        power_df = folder_to_series(path, label)
+        print(path)
+        label = path[1] # Ryerson
+        power_df = folder_to_series(path[0], label)
         print('Start plotting power cdf of ' + label)
-        ax = sns.kdeplot(power_df['Power of ' + label], cumulative=False, shade=False)
+        ax = sns.kdeplot(power_df[label], cumulative=True, shade=False)
         print(power_df.quantile(0.95))
 
-    ax.set_title('Power CDF')
+    ax.set_title('Power CDF for different observers')
     plt.legend(loc=0)
-    plt.xlabel('Power(in dB)')
+    plt.xlabel('Power (in dB)')
     plt.ylabel('CDF')
 
     ax.get_figure().savefig(lambda_path + fig_name + '.eps', ppi = 1200, format='eps')
-    print(fig_name + '.png is successfully generated')
+    print(fig_name + '.eps is successfully generated')
 
 abnor_path = ['LOS-5M-USRP1', 'LOS-5M-USRP2', 'LOS-5M-USRP3', 'NLOS-5M-USRP1', 'Dynamics-5M-USRP1']
 abnor_path = ['/net/adv_spectrum/data/downsample/downsample_10/abnormal/' + i + '/' for i in abnor_path]
-# print(abnor_path)
-plot_power_cdf(abnor_path, 'FBS_PDF')
+
+normal = '/net/adv_spectrum/data/downsample/downsample_10/normal/'
+# normal_path = [[normal + 'ryerson_train', 'Stable'], [normal + 'campus_drive', 'Semi-stable'], [normal + 'downtown', 'Dynamic']]
+normal_path = [[normal + 'downtown', 'Dynamic']]
+plot_power_cdf(normal_path, 'Downtown_PDF')
