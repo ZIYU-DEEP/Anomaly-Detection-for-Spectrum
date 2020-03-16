@@ -125,11 +125,8 @@ np.random.seed(42)
 model = tf.keras.models.\
     Sequential([tf.keras.layers.LSTM(64, return_sequences=True,
                                      input_shape=[None, 128]),
-                tf.keras.layers.BatchNormalization(),
                 tf.keras.layers.LSTM(64, return_sequences=True),
-                tf.keras.layers.BatchNormalization(),
                 tf.keras.layers.LSTM(64, return_sequences=False),
-                tf.keras.layers.BatchNormalization(),
                 tf.keras.layers.Dense(128 * predict_size),
                 tf.keras.layers.Reshape((predict_size, 128))])
 
