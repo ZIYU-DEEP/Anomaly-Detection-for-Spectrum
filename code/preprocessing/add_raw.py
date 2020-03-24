@@ -7,9 +7,10 @@ import multiprocessing as mp
 import random
 
 core = int(sys.argv[1])
-fake_BS = sys.argv[2]
-real_num = int(sys.argv[3])
-fake_num = int(sys.argv[4])
+real_BS = sys.argv[2]
+fake_BS = sys.argv[3]
+real_num = int(sys.argv[4])
+fake_num = int(sys.argv[5])
 # real_BS = '.dat'
 # fake_BS = '.dat'
 file_out = '.dat'  ## name seq: real_BS-fake_BS-power_level
@@ -141,13 +142,13 @@ def add_diff_batch(path, real_BS, power_level):
 #     print('start adding ' + real_BS + ' and ' + fake_BS + ', on power level ' + str(i*3))
 #     add_diff_raw(real_BS, fake_BS, G_path + file_out, 5, i*3)
 
-real_BS_path = '/net/adv_spectrum/data/raw/normal/campus_drive'
+real_BS_path = '/net/adv_spectrum/data/raw/normal/' + real_BS
 ry_t1_path = '/net/adv_spectrum/data/raw/normal/ryerson_t1'
 ry_t2_path = '/net/adv_spectrum/data/raw/normal/ryerson_t2'
 sr_path = '/net/adv_spectrum/data/raw/normal/searle'
 dt_path = '/net/adv_spectrum/data/raw/normal/downtown'
 jcl_path = '/net/adv_spectrum/data/raw/normal/JCL'
-abnormal_path = '/net/adv_spectrum/data/raw/abnormal/campus_drive'
+abnormal_path = '/net/adv_spectrum/data/raw/abnormal/' + real_BS
 FBSpath = '/net/adv_spectrum/data/raw/abnormal/'
 
 # add_raw_batch(real_BS_path, ry_t1_path, abnormal_path + '_' + ry_t1_path.split('/')[-1] + '/')
@@ -173,7 +174,7 @@ def add_raw_batch(index):
     files = [real_BS_files[i*core + index] for i in range(real_per_core)]
     # print(files)
     for file in files:
-        rand_list = random.sample(range(5), fake_num) 
+        rand_list = random.sample(range(6), fake_num) 
         # print(rand_list)
         for rand in rand_list:
             fake_BS = fake_BS_files[rand]
