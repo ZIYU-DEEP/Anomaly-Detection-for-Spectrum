@@ -5,7 +5,7 @@ This is repository for anomaly detection for spectrum data. Currently, the model
 
 0. [utils.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/utils.py)
 1. [featurization.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/featurization.py)
-2. [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training.py)
+2. [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training_joblib.py)
 3. [evaluation.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/evaluation.py)
 
 Technical details on preprocessing data can be found at this [repository](https://github.com/0x10cxR1/spectrum_monitoring_sandlab/tree/master/preprocessing).
@@ -48,7 +48,7 @@ $ python featurization.py 10 100 25 ryerson normal
 
 ### 2.2. Training
 
-> **Code**: [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training.py)
+> **Code**: [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training_joblib.py)
 >
 > **Input**: Featurized normal data (and abnormal data - if evaluation needed)
 >
