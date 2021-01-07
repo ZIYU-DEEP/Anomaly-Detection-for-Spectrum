@@ -8,7 +8,7 @@ This is repository for anomaly detection for spectrum data. Currently, the model
 2. [training.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/training.py)
 3. [evaluation.py](https://github.com/ZIYU-DEEP/Anomaly-Detection-for-Spectrum/blob/master/code/model/evaluation.py)
 
-
+Technical details on preprocessing data can be found at this [repository](https://github.com/0x10cxR1/spectrum_monitoring_sandlab/tree/master/preprocessing).
 
 
 
